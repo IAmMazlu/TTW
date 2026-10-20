@@ -3,39 +3,53 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>TTW Advance Tool</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D1B2A'/><text x='16' y='22' font-family='Arial Black,Arial,sans-serif' font-size='16' font-weight='900' text-anchor='middle' fill='%23F5F5F7' letter-spacing='1'>CL</text></svg>"/>
+<title>TTW // Advance Tool</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230A0A0A'/><rect x='0' y='26' width='32' height='6' rx='0' fill='%23A50F17'/><text x='16' y='21' font-family='Saira Condensed,Arial Narrow,Arial,sans-serif' font-size='15' font-weight='800' text-anchor='middle' fill='%23F5F5F7' letter-spacing='0.5'>TTW</text></svg>"/>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;800&family=Inter:wght@400;600;700&display=swap');
+/* TTW Brand Style Guide v3.0 — Saira Condensed replaces Barlow Condensed.
+   Display/H1 = Saira 800, H2 = Saira 600, body = Inter 400/700. No other fonts. */
+:root{
+  --scarlet:#A50F17;   /* Primary — accent bars, buttons, badges. NEVER small text on dark (2.5:1) */
+  --black:#0A0A0A;     /* Dominant dark — backgrounds, hero blocks */
+  --charcoal:#2B2B2E;  /* Secondary dark — cards, panels on black */
+  --grey:#9A9DA1;      /* Utility — captions, labels, metadata ON BLACK (7.3:1) */
+  --white:#F5F5F7;     /* Text on black, charcoal or scarlet */
+  --ok:#4CAF50;        /* status: approved */
+  --bad:#FF6B5E;       /* status: violation. Lightened from #F44336, which was 3.83:1
+                          on charcoal and failed AA at 12px — error text is the last
+                          thing that should be hard to read. Now 5.05:1 on charcoal,
+                          7.09:1 on black, and still plainly not Deep Scarlet. */
+}
 
 /* ===== Reset & base ===== */
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:Inter,sans-serif;
-  background:#0A0A0A;
-  color:#F5F5F7;
+  background:var(--black);
+  color:var(--white);
   padding:1.5rem;
   padding-top:5rem;
   max-width:960px;
   margin:0 auto;
 }
 h1{
-  font-family:'Barlow Condensed',sans-serif;
+  font-family:'Saira Condensed',sans-serif;
   font-size:2.5rem;
-  font-weight:700;
+  font-weight:800;
   letter-spacing:.05em;
   margin-bottom:.25rem;
-  color:#F5F5F7;
+  color:var(--white);
 }
-.sub{font-size:13px;color:#A8B2BB;margin-bottom:.75rem}
-.divider{border:none;border-top:1px solid #1C1C1E;margin:1.5rem 0}
+.sub{font-size:13px;color:var(--grey);margin-bottom:.75rem}
+.divider{border:none;border-top:1px solid var(--charcoal);margin:1.5rem 0}
 .hidden{display:none}
 
 /* ===== Now-building pill (under h1) ===== */
 .now-building{
   display:inline-block;
   font-size:11px;font-weight:700;
-  color:#0A0A0A;background:#A8B2BB;
+  color:var(--black);background:var(--grey);
   text-transform:uppercase;letter-spacing:.08em;
   padding:4px 10px;border-radius:999px;
   margin-bottom:.5rem;
@@ -44,17 +58,17 @@ h1{
 /* ===== Progress checklist ===== */
 .progress-row{
   display:flex;gap:16px;
-  font-size:11px;color:#A8B2BB;
+  font-size:11px;color:var(--grey);
   margin-bottom:1.25rem;
 }
 .progress-item{display:flex;align-items:center;gap:4px;white-space:nowrap}
-.progress-item.is-done{color:#4caf50}
+.progress-item.is-done{color:var(--ok)}
 
 /* ===== Sticky top bar ===== */
 .sticky-bar{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  background:#0A0A0A;
-  border-bottom:1px solid #1C1C1E;
+  background:var(--black);
+  border-bottom:1px solid var(--charcoal);
   padding:.75rem 1.5rem;
   display:flex;align-items:center;gap:20px;
   max-width:100%;
@@ -65,128 +79,129 @@ h1{
 }
 .sticky-label{
   font-size:11px;font-weight:700;
-  color:#A8B2BB;
+  color:var(--grey);
   text-transform:uppercase;letter-spacing:.08em;
   white-space:nowrap;
 }
 .sticky-input{
-  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;font-size:13px;padding:5px 8px;width:70px;
+  background:var(--charcoal);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);font-size:13px;padding:5px 8px;width:70px;
   font-family:Inter,sans-serif;
 }
 .sticky-select{
-  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;font-size:13px;padding:5px 8px;
+  background:var(--charcoal);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);font-size:13px;padding:5px 8px;
   font-family:Inter,sans-serif;flex:1;min-width:140px;
 }
 
 /* ===== Form fields ===== */
 input,select,textarea{
-  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;font-size:13px;padding:8px 10px;width:100%;
+  background:var(--charcoal);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);font-size:13px;padding:8px 10px;width:100%;
   font-family:Inter,sans-serif;
 }
-input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--grey)}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.fg label{font-size:12px;color:#A8B2BB}
+.fg label{font-size:12px;color:var(--grey)}
 .fg:last-child{margin-bottom:0}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:600px){.grid2{grid-template-columns:1fr}}
 
 /* ===== Sections & tool headers ===== */
 .section{
-  border:1px solid #1C1C1E;border-radius:12px;
+  border:1px solid var(--charcoal);border-radius:12px;
   padding:1.25rem;margin-bottom:1.25rem;
-  background:#0D1B2A;
+  background:var(--charcoal);
 }
-.sec-sub{font-size:12px;color:#A8B2BB;margin-bottom:.75rem}
+.sec-sub{font-size:12px;color:var(--grey);margin-bottom:.75rem}
 .tool-header{display:flex;align-items:center;gap:14px;margin-bottom:1.25rem}
 .tool-header--tight{margin-bottom:0}
-.tool-header-bar{width:4px;height:36px;background:#A8B2BB;border-radius:2px;flex-shrink:0}
+.tool-header-bar{width:4px;height:36px;background:var(--scarlet);border-radius:2px;flex-shrink:0}
 .tool-header-text{
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:28px;font-weight:700;
-  color:#F5F5F7;letter-spacing:.03em;line-height:1;
+  font-family:'Saira Condensed',sans-serif;
+  font-size:28px;font-weight:600;
+  text-transform:uppercase;
+  color:var(--white);letter-spacing:.03em;line-height:1;
 }
-.tool-header-sub{font-size:12px;color:#A8B2BB;margin-top:3px}
+.tool-header-sub{font-size:12px;color:var(--grey);margin-top:3px}
 .row-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .panel-body{margin-top:.75rem;scroll-margin-top:80px}
-.dashed-hint{font-size:11px;color:#A8B2BB;margin-bottom:6px}
-.team-label{font-size:12px;font-weight:600;color:#A8B2BB;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+.dashed-hint{font-size:11px;color:var(--grey);margin-bottom:6px}
+.team-label{font-size:12px;font-weight:600;color:var(--grey);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
 
 /* ===== Buttons ===== */
 .btn{
   width:100%;padding:12px;font-size:14px;font-weight:600;
   margin:8px 0;cursor:pointer;
-  background:#F5F5F7;color:#0A0A0A;
+  background:var(--white);color:var(--black);
   border:none;border-radius:8px;letter-spacing:.02em;
 }
 .btn:hover{background:#ddd}
 .btn-sm{
   font-size:12px;padding:6px 12px;cursor:pointer;
-  background:transparent;border:1px solid #1C1C1E;
-  color:#A8B2BB;border-radius:6px;
+  background:transparent;border:1px solid var(--charcoal);
+  color:var(--grey);border-radius:6px;
 }
-.btn-sm:hover{border-color:#A8B2BB}
+.btn-sm:hover{border-color:var(--grey)}
 .btn-req{
   width:100%;padding:10px;font-size:13px;font-weight:600;
   margin-top:10px;cursor:pointer;
-  background:#0D1B2A;border:1px solid #A8B2BB;
-  color:#F5F5F7;border-radius:6px;
+  background:var(--scarlet);border:1px solid var(--grey);
+  color:var(--white);border-radius:6px;
 }
-.btn-req:hover{background:#1C1C1E}
+.btn-req:hover{background:var(--charcoal)}
 .btn-clear{
   font-size:12px;padding:5px 12px;cursor:pointer;
-  background:transparent;border:1px solid #1C1C1E;
-  color:#A8B2BB;border-radius:6px;white-space:nowrap;
+  background:transparent;border:1px solid var(--charcoal);
+  color:var(--grey);border-radius:6px;white-space:nowrap;
 }
-.btn-clear:hover{border-color:#A8B2BB}
+.btn-clear:hover{border-color:var(--grey)}
 .action-row{display:flex;gap:10px;margin-top:10px}
 .action-row .btn-req{margin-top:0;flex:1}
 .btn-req:disabled,
 .btn:disabled{
   opacity:.45;cursor:not-allowed;
 }
-.btn-req:disabled:hover{background:#0D1B2A}
+.btn-req:disabled:hover{background:var(--scarlet)}
 
 /* ===== Output boxes & headers ===== */
 .out-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
 .out-btns{display:flex;gap:6px}
-.out-label{font-size:11px;font-weight:700;color:#A8B2BB;text-transform:uppercase;letter-spacing:.08em}
+.out-label{font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.08em}
 .copy-btn{
   font-size:12px;padding:4px 10px;cursor:pointer;
-  background:transparent;border:1px solid #1C1C1E;
-  color:#A8B2BB;border-radius:5px;
+  background:transparent;border:1px solid var(--charcoal);
+  color:var(--grey);border-radius:5px;
 }
-.copy-btn:hover{border-color:#A8B2BB}
-.copy-btn--discord{background:#4caf50;color:#0A0A0A;border-color:#4caf50;font-weight:600}
-.copy-btn--discord.is-failed{background:#f44336;border-color:#f44336}
-.req-timestamp{font-size:11px;color:#A8B2BB;font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px}
+.copy-btn:hover{border-color:var(--grey)}
+.copy-btn--discord{background:var(--ok);color:var(--black);border-color:var(--ok);font-weight:600}
+.copy-btn--discord.is-failed{background:var(--bad);border-color:var(--bad)}
+.req-timestamp{font-size:11px;color:var(--grey);font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px}
 
 /* ===== Inline warning / error / info banners ===== */
 .warn-box{
-  background:#2a1e0a;border-left:3px solid #f0a020;
-  color:#f5c77a;font-size:12px;line-height:1.5;
+  background:var(--charcoal);border-left:3px solid var(--scarlet);
+  color:var(--white);font-size:12px;line-height:1.5;
   padding:10px 12px;border-radius:6px;margin-top:10px;
 }
 .warn-box ul{margin:4px 0 0 18px}
 .warn-box li{margin:2px 0}
 .status-msg{font-size:12px;margin-top:6px}
-.status-msg--error{color:#f44336}
-.status-msg--success{color:#4caf50}
+.status-msg--error{color:var(--bad)}
+.status-msg--success{color:var(--ok)}
 
 /* Small ghost icon button (used for Week +1 arrow) */
 .btn-icon{
   font-size:14px;font-weight:700;cursor:pointer;
-  background:#1C1C1E;border:1px solid #1C1C1E;
-  color:#F5F5F7;border-radius:6px;
+  background:var(--charcoal);border:1px solid var(--charcoal);
+  color:var(--white);border-radius:6px;
   padding:5px 10px;line-height:1;
   font-family:Inter,sans-serif;
 }
-.btn-icon:hover{border-color:#A8B2BB}
+.btn-icon:hover{border-color:var(--grey)}
 .btn-icon:disabled{opacity:.45;cursor:not-allowed}
 .output-section{
-  background:#0A0A0A;border:1px solid #A8B2BB;border-radius:12px;
+  background:var(--black);border:1px solid var(--grey);border-radius:12px;
   padding:1.25rem;margin-bottom:1.25rem;
 }
 
@@ -197,13 +212,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
   line-height:1.65;padding:.75rem;
   border-radius:8px;resize:vertical;margin-top:8px;
 }
-.paste-box  {background:#1C1C1E;border:1px solid #1C1C1E;color:#F5F5F7}
-.output-box {background:#0A0A0A;border:1px solid #A8B2BB;color:#F5F5F7}
-.request-box{background:#1C1C1E;border:1px dashed #A8B2BB;color:#F5F5F7}
+.paste-box  {background:var(--charcoal);border:1px solid var(--charcoal);color:var(--white)}
+.output-box {background:var(--black);border:1px solid var(--grey);color:var(--white)}
+.request-box{background:var(--charcoal);border:1px dashed var(--grey);color:var(--white)}
 /* ===== Status text ===== */
-.hint{font-size:12px;color:#A8B2BB;margin-top:4px}
-.ok{font-size:12px;color:#4caf50;margin-top:6px}
-.badge{font-size:11px;color:#4caf50;margin-left:8px}
+.hint{font-size:12px;color:var(--grey);margin-top:4px}
+.ok{font-size:12px;color:var(--ok);margin-top:6px}
+.badge{font-size:11px;color:var(--ok);margin-left:8px}
 
 /* ===== Roster display ===== */
 .roster-head{
@@ -211,7 +226,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
   gap:8px;margin-bottom:6px;
 }
 .roster-head span{
-  font-size:11px;color:#A8B2BB;font-weight:700;
+  font-size:11px;color:var(--grey);font-weight:700;
   text-transform:uppercase;letter-spacing:.04em;
 }
 .roster-row{
@@ -219,81 +234,81 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
   gap:8px;margin-bottom:6px;align-items:center;
 }
 .roster-cell{
-  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;font-size:13px;padding:8px 10px;opacity:.7;
+  background:var(--charcoal);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);font-size:13px;padding:8px 10px;opacity:.7;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.roster-check{font-size:11px;color:#4caf50;padding:0 6px}
-.roster-empty{font-size:12px;color:#A8B2BB;padding:4px 0}
+.roster-check{font-size:11px;color:var(--ok);padding:0 6px}
+.roster-empty{font-size:12px;color:var(--grey);padding:4px 0}
 
 /* ===== Primer callout (Top 25 instructions) ===== */
 .primer{
-  background:#1C1C1E;border-radius:8px;
+  background:var(--charcoal);border-radius:8px;
   padding:1rem;margin-bottom:1rem;
-  border-left:3px solid #A8B2BB;
+  border-left:3px solid var(--scarlet);
 }
-.primer-title{font-size:12px;font-weight:700;color:#F5F5F7;margin-bottom:8px}
-.primer-text{font-size:12px;color:#A8B2BB;line-height:1.6;margin-bottom:10px}
-.primer-text strong{color:#F5F5F7}
-.primer-step{font-size:12px;font-weight:700;color:#F5F5F7;margin-bottom:6px}
+.primer-title{font-size:12px;font-weight:700;color:var(--white);margin-bottom:8px}
+.primer-text{font-size:12px;color:var(--grey);line-height:1.6;margin-bottom:10px}
+.primer-text strong{color:var(--white)}
+.primer-step{font-size:12px;font-weight:700;color:var(--white);margin-bottom:6px}
 .primer-box{
   width:100%;font-size:12px;
   font-family:'Courier New',monospace;
-  background:#0D1B2A;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;padding:.6rem;line-height:1.6;
+  background:var(--charcoal);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);padding:.6rem;line-height:1.6;
   resize:none;margin-bottom:8px;
 }
 .primer-copy{
   font-size:12px;padding:5px 12px;cursor:pointer;
-  background:transparent;border:1px solid #A8B2BB;
-  color:#A8B2BB;border-radius:5px;margin-bottom:10px;
+  background:transparent;border:1px solid var(--grey);
+  color:var(--grey);border-radius:5px;margin-bottom:10px;
 }
 
 /* ===== Wheel of Fortune toggle (offseason only) ===== */
 .wheel-toggle{
   display:flex;align-items:center;gap:10px;
   padding:10px 12px;margin-top:12px;
-  background:#1C1C1E;border-left:3px solid #A8B2BB;
-  border-radius:6px;font-size:13px;color:#F5F5F7;
+  background:var(--charcoal);border-left:3px solid var(--scarlet);
+  border-radius:6px;font-size:13px;color:var(--white);
   cursor:pointer;
 }
-.wheel-toggle input{width:auto;margin:0;accent-color:#A8B2BB}
+.wheel-toggle input{width:auto;margin:0;accent-color:var(--grey)}
 .wheel-toggle label{cursor:pointer;user-select:none;flex:1}
 
 /* ===== GOTW extras ===== */
-.gotw-graphic{margin-top:1rem;border-top:1px solid #1C1C1E;padding-top:1rem}
+.gotw-graphic{margin-top:1rem;border-top:1px solid var(--charcoal);padding-top:1rem}
 .gotw-graphic-title{
-  font-size:11px;font-weight:700;color:#A8B2BB;
+  font-size:11px;font-weight:700;color:var(--grey);
   text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
 }
-.gotw-graphic-desc{font-size:12px;color:#A8B2BB;margin-bottom:8px}
+.gotw-graphic-desc{font-size:12px;color:var(--grey);margin-bottom:8px}
 
 /* ===== Char count (Advance post length guard) ===== */
 .char-count{
-  font-size:11px;color:#A8B2BB;font-weight:400;
+  font-size:11px;color:var(--grey);font-weight:400;
   letter-spacing:0;text-transform:none;margin-left:8px;
 }
-.char-count--over{color:#f44336;font-weight:700}
+.char-count--over{color:var(--bad);font-weight:700}
 
 /* ===== Discord preview (collapsible) ===== */
 .discord-preview{margin-top:10px}
 .discord-preview summary{
-  font-size:12px;color:#A8B2BB;cursor:pointer;
-  padding:6px 10px;border:1px solid #1C1C1E;border-radius:6px;
+  font-size:12px;color:var(--grey);cursor:pointer;
+  padding:6px 10px;border:1px solid var(--charcoal);border-radius:6px;
   list-style:none;user-select:none;display:inline-block;
 }
 .discord-preview summary::-webkit-details-marker{display:none}
-.discord-preview summary:hover{border-color:#A8B2BB}
-.discord-preview[open] summary{border-color:#A8B2BB;margin-bottom:8px}
+.discord-preview summary:hover{border-color:var(--grey)}
+.discord-preview[open] summary{border-color:var(--grey);margin-bottom:8px}
 .discord-preview-box{
-  background:#0A0A0A;border:1px solid #1C1C1E;border-radius:6px;
-  color:#F5F5F7;font-size:12px;font-family:'Courier New',monospace;
+  background:var(--black);border:1px solid var(--charcoal);border-radius:6px;
+  color:var(--white);font-size:12px;font-family:'Courier New',monospace;
   padding:.75rem;line-height:1.55;white-space:pre-wrap;
   max-height:280px;overflow:auto;
 }
 .discord-preview-footer{
-  margin-top:6px;padding:6px 10px;border-left:3px solid #0D1B2A;
-  background:#0D1B2A;color:#A8B2BB;font-size:11px;border-radius:0 4px 4px 0;
+  margin-top:6px;padding:6px 10px;border-left:3px solid var(--scarlet);
+  background:var(--charcoal);color:var(--grey);font-size:11px;border-radius:0 4px 4px 0;
 }
 
 /* ===== Focus-visible rings (a11y) ===== */
@@ -304,7 +319,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
 .btn-clear:focus-visible,
 .copy-btn:focus-visible,
 .primer-copy:focus-visible{
-  outline:2px solid #A8B2BB;outline-offset:2px;
+  outline:2px solid var(--grey);outline-offset:2px;
 }
 </style>
 </head>
@@ -322,7 +337,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
   </div>
 </div>
 
-<h1>TTW ADVANCE TOOL</h1>
+<h1>TTW // ADVANCE TOOL</h1>
 <p class="sub">Through The Whistle — Advance Day Post Generator &nbsp;·&nbsp; Start by setting your Week, Season, and Week Type in the bar above — then work through each section top to bottom.</p>
 <div class="now-building" id="nowBuilding">Building for: Week 0 — Season Kickoff · Season 1</div>
 <div class="progress-row" id="progressRow" aria-live="polite" aria-label="Section completion progress">
@@ -366,22 +381,22 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
   <div id="webhookPanel" class="hidden panel-body">
     <p class="sec-sub">Saved in your browser only — never sent anywhere except Discord.</p>
     <div class="fg">
-      <label for="webhookUrl">Main webhook URL <span style="color:#A8B2BB;font-weight:400">(Advance posts — text channel)</span></label>
+      <label for="webhookUrl">Main webhook URL <span style="color:var(--grey);font-weight:400">(Advance posts — text channel)</span></label>
       <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." oninput="saveWebhook()"/>
     </div>
     <p class="status-msg status-msg--error hidden" id="webhookFormatWarn">That doesn't look like a Discord webhook URL. It should start with <code>https://discord.com/api/webhooks/</code>.</p>
     <div class="fg">
-      <label for="forumWebhookUrl">Forum webhook URL <span style="color:#A8B2BB;font-weight:400">(GOTW + Top 25 — forum channel)</span></label>
+      <label for="forumWebhookUrl">Forum webhook URL <span style="color:var(--grey);font-weight:400">(GOTW + Top 25 — forum channel)</span></label>
       <input type="text" id="forumWebhookUrl" placeholder="https://discord.com/api/webhooks/..." oninput="saveForumWebhook()"/>
     </div>
     <p class="status-msg status-msg--error hidden" id="forumWebhookFormatWarn">That doesn't look like a Discord webhook URL. It should start with <code>https://discord.com/api/webhooks/</code>.</p>
     <div class="grid2" style="margin-top:6px">
       <div class="fg">
-        <label for="roleId">Role ID for @TTW Coach <span style="color:#A8B2BB;font-weight:400">(optional)</span></label>
+        <label for="roleId">Role ID for @TTW Coach <span style="color:var(--grey);font-weight:400">(optional)</span></label>
         <input type="text" id="roleId" placeholder="e.g. 1494142269102755962" oninput="saveRoleId()"/>
       </div>
       <div class="fg">
-        <label for="channelId">Channel ID for #scheduling <span style="color:#A8B2BB;font-weight:400">(optional)</span></label>
+        <label for="channelId">Channel ID for #scheduling <span style="color:var(--grey);font-weight:400">(optional)</span></label>
         <input type="text" id="channelId" placeholder="e.g. 1494150887239716924" oninput="saveChannelId()"/>
       </div>
     </div>
@@ -396,7 +411,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
     <hr class="divider" style="margin:1rem 0"/>
     <div class="row-header">
       <div>
-        <div style="font-size:12px;font-weight:700;color:#F5F5F7;text-transform:uppercase;letter-spacing:.04em">State export / import</div>
+        <div style="font-size:12px;font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:.04em">State export / import</div>
         <div class="hint" style="margin-top:2px">Bundle all TTW settings and drafts into a JSON file — restore on another browser or device.</div>
       </div>
     </div>
@@ -426,7 +441,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
       <label for="wheelToggle">🎡 Wheel of Fortune active this season</label>
     </div>
     <div class="fg hidden" id="wheelDateBox" style="margin-top:8px">
-      <label>Wheel date/time <span style="color:#A8B2BB;font-weight:400">(optional — leave blank to stay vague)</span></label>
+      <label>Wheel date/time <span style="color:var(--grey);font-weight:400">(optional — leave blank to stay vague)</span></label>
       <input type="text" id="wheelDate" placeholder="e.g. Saturday at 8pm EST" oninput="saveWheelDate()"/>
     </div>
   </div>
@@ -482,9 +497,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
       <div class="fg"><label>Coach name</label><input type="text" id="g1coach" placeholder="GoodGameBro"/></div>
       <div class="fg"><label>Record</label><input type="text" id="g1rec" placeholder="15-1"/></div>
       <div class="fg"><label>Ranking (optional)</label><input type="text" id="g1rank" placeholder="#1"/></div>
-      <div class="fg"><label>Recent result <span style="color:#A8B2BB;font-weight:400">(or preseason outlook)</span></label><input type="text" id="g1result" placeholder="W 52-17 vs Ohio State  —or—  Returns 17 starters from 11-2 campaign"/></div>
+      <div class="fg"><label>Recent result <span style="color:var(--grey);font-weight:400">(or preseason outlook)</span></label><input type="text" id="g1result" placeholder="W 52-17 vs Ohio State  —or—  Returns 17 starters from 11-2 campaign"/></div>
       <div class="fg"><label>Team narrative</label><textarea class="mono-box paste-box" id="g1narrative" rows="2" placeholder="Hot off a dominant title game win, or building on preseason buzz..."></textarea></div>
-      <div class="fg"><label>Key players <span style="color:#A8B2BB;font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g1players" rows="3" placeholder="QB Jason Smith — 341 yds, 4 TD last week&#10;RB Marcus Johnson — 1,200 yds projected as a junior"></textarea></div>
+      <div class="fg"><label>Key players <span style="color:var(--grey);font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g1players" rows="3" placeholder="QB Jason Smith — 341 yds, 4 TD last week&#10;RB Marcus Johnson — 1,200 yds projected as a junior"></textarea></div>
     </div>
     <div>
       <div class="team-label">Team 2</div>
@@ -492,9 +507,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
       <div class="fg"><label>Coach name</label><input type="text" id="g2coach" placeholder="DEppsRightSteps"/></div>
       <div class="fg"><label>Record</label><input type="text" id="g2rec" placeholder="14-1"/></div>
       <div class="fg"><label>Ranking (optional)</label><input type="text" id="g2rank" placeholder="#3"/></div>
-      <div class="fg"><label>Recent result <span style="color:#A8B2BB;font-weight:400">(or preseason outlook)</span></label><input type="text" id="g2result" placeholder="W 38-21 vs Florida State  —or—  Loaded returning core, ranked preseason top 10"/></div>
+      <div class="fg"><label>Recent result <span style="color:var(--grey);font-weight:400">(or preseason outlook)</span></label><input type="text" id="g2result" placeholder="W 38-21 vs Florida State  —or—  Loaded returning core, ranked preseason top 10"/></div>
       <div class="fg"><label>Team narrative</label><textarea class="mono-box paste-box" id="g2narrative" rows="2" placeholder="Battle-tested and peaking late, or riding preseason momentum..."></textarea></div>
-      <div class="fg"><label>Key players <span style="color:#A8B2BB;font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g2players" rows="3" placeholder="QB Tyler Williams — 298 yds, 3 TD last week&#10;DE Chris Carter — projected all-conference returning senior"></textarea></div>
+      <div class="fg"><label>Key players <span style="color:var(--grey);font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g2players" rows="3" placeholder="QB Tyler Williams — 298 yds, 3 TD last week&#10;DE Chris Carter — projected all-conference returning senior"></textarea></div>
     </div>
   </div>
 
@@ -588,7 +603,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
     <label>Receiving votes (one per line)</label>
     <textarea id="receiving" rows="5" style="resize:vertical" placeholder="One team per line"></textarea>
   </div>
-  <p class="hint">Teams receiving votes but not ranked in the Top 25 this week only. Tip: press <strong style="color:#F5F5F7">Ctrl/Cmd+Enter</strong> in the rankings box to generate.</p>
+  <p class="hint">Teams receiving votes but not ranked in the Top 25 this week only. Tip: press <strong style="color:var(--white)">Ctrl/Cmd+Enter</strong> in the rankings box to generate.</p>
 </div>
 
 <div class="action-row">
@@ -642,8 +657,8 @@ const WEBHOOK_PATTERN = /^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/we
 const ROSTER_TIMEOUT_MS = 10000;
 const DISCORD_CONTENT_LIMIT = 2000;
 const DISCORD_THREAD_NAME_LIMIT = 100;
-// Deep Navy #0D1B2A as decimal — used as the sidebar color on all embeds.
-const EMBED_COLOR = 0x0D1B2A;
+// Deep Scarlet #A50F17 as decimal — the TTW brand sidebar on every embed.
+const EMBED_COLOR = 0xA50F17;
 
 // ============ Week-type config (single source of truth) ============
 // Drives the dropdown options, short codes, display labels, and tone
