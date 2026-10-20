@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TTW Advance Tool</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D1B2A'/><text x='16' y='22' font-family='Arial Black,Arial,sans-serif' font-size='16' font-weight='900' text-anchor='middle' fill='%23F5F5F7' letter-spacing='1'>CL</text></svg>"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+/* ===== Reset & base ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Inter,sans-serif;
+  background:#0A0A0A;
+  color:#F5F5F7;
+  padding:1.5rem;
+  padding-top:5rem;
+  max-width:960px;
+  margin:0 auto;
+}
+h1{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:2.5rem;
+  font-weight:700;
+  letter-spacing:.05em;
+  margin-bottom:.25rem;
+  color:#F5F5F7;
+}
+.sub{font-size:13px;color:#A8B2BB;margin-bottom:.75rem}
+.divider{border:none;border-top:1px solid #1C1C1E;margin:1.5rem 0}
+.hidden{display:none}
+
+/* ===== Now-building pill (under h1) ===== */
+.now-building{
+  display:inline-block;
+  font-size:11px;font-weight:700;
+  color:#0A0A0A;background:#A8B2BB;
+  text-transform:uppercase;letter-spacing:.08em;
+  padding:4px 10px;border-radius:999px;
+  margin-bottom:.5rem;
+}
+
+/* ===== Progress checklist ===== */
+.progress-row{
+  display:flex;gap:16px;
+  font-size:11px;color:#A8B2BB;
+  margin-bottom:1.25rem;
+}
+.progress-item{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.progress-item.is-done{color:#4caf50}
+
+/* ===== Sticky top bar ===== */
+.sticky-bar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:#0A0A0A;
+  border-bottom:1px solid #1C1C1E;
+  padding:.75rem 1.5rem;
+  display:flex;align-items:center;gap:20px;
+  max-width:100%;
+}
+.sticky-inner{
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  max-width:960px;margin:0 auto;width:100%;
+}
+.sticky-label{
+  font-size:11px;font-weight:700;
+  color:#A8B2BB;
+  text-transform:uppercase;letter-spacing:.08em;
+  white-space:nowrap;
+}
+.sticky-input{
+  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;font-size:13px;padding:5px 8px;width:70px;
+  font-family:Inter,sans-serif;
+}
+.sticky-select{
+  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;font-size:13px;padding:5px 8px;
+  font-family:Inter,sans-serif;flex:1;min-width:140px;
+}
+
+/* ===== Form fields ===== */
+input,select,textarea{
+  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;font-size:13px;padding:8px 10px;width:100%;
+  font-family:Inter,sans-serif;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#A8B2BB}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.fg label{font-size:12px;color:#A8B2BB}
+.fg:last-child{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+
+/* ===== Sections & tool headers ===== */
+.section{
+  border:1px solid #1C1C1E;border-radius:12px;
+  padding:1.25rem;margin-bottom:1.25rem;
+  background:#0D1B2A;
+}
+.sec-sub{font-size:12px;color:#A8B2BB;margin-bottom:.75rem}
+.tool-header{display:flex;align-items:center;gap:14px;margin-bottom:1.25rem}
+.tool-header--tight{margin-bottom:0}
+.tool-header-bar{width:4px;height:36px;background:#A8B2BB;border-radius:2px;flex-shrink:0}
+.tool-header-text{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:28px;font-weight:700;
+  color:#F5F5F7;letter-spacing:.03em;line-height:1;
+}
+.tool-header-sub{font-size:12px;color:#A8B2BB;margin-top:3px}
+.row-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.panel-body{margin-top:.75rem;scroll-margin-top:80px}
+.dashed-hint{font-size:11px;color:#A8B2BB;margin-bottom:6px}
+.team-label{font-size:12px;font-weight:600;color:#A8B2BB;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em}
+
+/* ===== Buttons ===== */
+.btn{
+  width:100%;padding:12px;font-size:14px;font-weight:600;
+  margin:8px 0;cursor:pointer;
+  background:#F5F5F7;color:#0A0A0A;
+  border:none;border-radius:8px;letter-spacing:.02em;
+}
+.btn:hover{background:#ddd}
+.btn-sm{
+  font-size:12px;padding:6px 12px;cursor:pointer;
+  background:transparent;border:1px solid #1C1C1E;
+  color:#A8B2BB;border-radius:6px;
+}
+.btn-sm:hover{border-color:#A8B2BB}
+.btn-req{
+  width:100%;padding:10px;font-size:13px;font-weight:600;
+  margin-top:10px;cursor:pointer;
+  background:#0D1B2A;border:1px solid #A8B2BB;
+  color:#F5F5F7;border-radius:6px;
+}
+.btn-req:hover{background:#1C1C1E}
+.btn-clear{
+  font-size:12px;padding:5px 12px;cursor:pointer;
+  background:transparent;border:1px solid #1C1C1E;
+  color:#A8B2BB;border-radius:6px;white-space:nowrap;
+}
+.btn-clear:hover{border-color:#A8B2BB}
+.action-row{display:flex;gap:10px;margin-top:10px}
+.action-row .btn-req{margin-top:0;flex:1}
+.btn-req:disabled,
+.btn:disabled{
+  opacity:.45;cursor:not-allowed;
+}
+.btn-req:disabled:hover{background:#0D1B2A}
+
+/* ===== Output boxes & headers ===== */
+.out-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.out-btns{display:flex;gap:6px}
+.out-label{font-size:11px;font-weight:700;color:#A8B2BB;text-transform:uppercase;letter-spacing:.08em}
+.copy-btn{
+  font-size:12px;padding:4px 10px;cursor:pointer;
+  background:transparent;border:1px solid #1C1C1E;
+  color:#A8B2BB;border-radius:5px;
+}
+.copy-btn:hover{border-color:#A8B2BB}
+.copy-btn--discord{background:#4caf50;color:#0A0A0A;border-color:#4caf50;font-weight:600}
+.copy-btn--discord.is-failed{background:#f44336;border-color:#f44336}
+.req-timestamp{font-size:11px;color:#A8B2BB;font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px}
+
+/* ===== Inline warning / error / info banners ===== */
+.warn-box{
+  background:#2a1e0a;border-left:3px solid #f0a020;
+  color:#f5c77a;font-size:12px;line-height:1.5;
+  padding:10px 12px;border-radius:6px;margin-top:10px;
+}
+.warn-box ul{margin:4px 0 0 18px}
+.warn-box li{margin:2px 0}
+.status-msg{font-size:12px;margin-top:6px}
+.status-msg--error{color:#f44336}
+.status-msg--success{color:#4caf50}
+
+/* Small ghost icon button (used for Week +1 arrow) */
+.btn-icon{
+  font-size:14px;font-weight:700;cursor:pointer;
+  background:#1C1C1E;border:1px solid #1C1C1E;
+  color:#F5F5F7;border-radius:6px;
+  padding:5px 10px;line-height:1;
+  font-family:Inter,sans-serif;
+}
+.btn-icon:hover{border-color:#A8B2BB}
+.btn-icon:disabled{opacity:.45;cursor:not-allowed}
+.output-section{
+  background:#0A0A0A;border:1px solid #A8B2BB;border-radius:12px;
+  padding:1.25rem;margin-bottom:1.25rem;
+}
+
+/* shared mono box */
+.mono-box{
+  width:100%;font-size:13px;
+  font-family:'Courier New',monospace;
+  line-height:1.65;padding:.75rem;
+  border-radius:8px;resize:vertical;margin-top:8px;
+}
+.paste-box  {background:#1C1C1E;border:1px solid #1C1C1E;color:#F5F5F7}
+.output-box {background:#0A0A0A;border:1px solid #A8B2BB;color:#F5F5F7}
+.request-box{background:#1C1C1E;border:1px dashed #A8B2BB;color:#F5F5F7}
+/* ===== Status text ===== */
+.hint{font-size:12px;color:#A8B2BB;margin-top:4px}
+.ok{font-size:12px;color:#4caf50;margin-top:6px}
+.badge{font-size:11px;color:#4caf50;margin-left:8px}
+
+/* ===== Roster display ===== */
+.roster-head{
+  display:grid;grid-template-columns:1fr 1fr auto;
+  gap:8px;margin-bottom:6px;
+}
+.roster-head span{
+  font-size:11px;color:#A8B2BB;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.roster-row{
+  display:grid;grid-template-columns:1fr 1fr auto;
+  gap:8px;margin-bottom:6px;align-items:center;
+}
+.roster-cell{
+  background:#1C1C1E;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;font-size:13px;padding:8px 10px;opacity:.7;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.roster-check{font-size:11px;color:#4caf50;padding:0 6px}
+.roster-empty{font-size:12px;color:#A8B2BB;padding:4px 0}
+
+/* ===== Primer callout (Top 25 instructions) ===== */
+.primer{
+  background:#1C1C1E;border-radius:8px;
+  padding:1rem;margin-bottom:1rem;
+  border-left:3px solid #A8B2BB;
+}
+.primer-title{font-size:12px;font-weight:700;color:#F5F5F7;margin-bottom:8px}
+.primer-text{font-size:12px;color:#A8B2BB;line-height:1.6;margin-bottom:10px}
+.primer-text strong{color:#F5F5F7}
+.primer-step{font-size:12px;font-weight:700;color:#F5F5F7;margin-bottom:6px}
+.primer-box{
+  width:100%;font-size:12px;
+  font-family:'Courier New',monospace;
+  background:#0D1B2A;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;padding:.6rem;line-height:1.6;
+  resize:none;margin-bottom:8px;
+}
+.primer-copy{
+  font-size:12px;padding:5px 12px;cursor:pointer;
+  background:transparent;border:1px solid #A8B2BB;
+  color:#A8B2BB;border-radius:5px;margin-bottom:10px;
+}
+
+/* ===== Wheel of Fortune toggle (offseason only) ===== */
+.wheel-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;margin-top:12px;
+  background:#1C1C1E;border-left:3px solid #A8B2BB;
+  border-radius:6px;font-size:13px;color:#F5F5F7;
+  cursor:pointer;
+}
+.wheel-toggle input{width:auto;margin:0;accent-color:#A8B2BB}
+.wheel-toggle label{cursor:pointer;user-select:none;flex:1}
+
+/* ===== GOTW extras ===== */
+.gotw-graphic{margin-top:1rem;border-top:1px solid #1C1C1E;padding-top:1rem}
+.gotw-graphic-title{
+  font-size:11px;font-weight:700;color:#A8B2BB;
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
+}
+.gotw-graphic-desc{font-size:12px;color:#A8B2BB;margin-bottom:8px}
+
+/* ===== Char count (Advance post length guard) ===== */
+.char-count{
+  font-size:11px;color:#A8B2BB;font-weight:400;
+  letter-spacing:0;text-transform:none;margin-left:8px;
+}
+.char-count--over{color:#f44336;font-weight:700}
+
+/* ===== Discord preview (collapsible) ===== */
+.discord-preview{margin-top:10px}
+.discord-preview summary{
+  font-size:12px;color:#A8B2BB;cursor:pointer;
+  padding:6px 10px;border:1px solid #1C1C1E;border-radius:6px;
+  list-style:none;user-select:none;display:inline-block;
+}
+.discord-preview summary::-webkit-details-marker{display:none}
+.discord-preview summary:hover{border-color:#A8B2BB}
+.discord-preview[open] summary{border-color:#A8B2BB;margin-bottom:8px}
+.discord-preview-box{
+  background:#0A0A0A;border:1px solid #1C1C1E;border-radius:6px;
+  color:#F5F5F7;font-size:12px;font-family:'Courier New',monospace;
+  padding:.75rem;line-height:1.55;white-space:pre-wrap;
+  max-height:280px;overflow:auto;
+}
+.discord-preview-footer{
+  margin-top:6px;padding:6px 10px;border-left:3px solid #0D1B2A;
+  background:#0D1B2A;color:#A8B2BB;font-size:11px;border-radius:0 4px 4px 0;
+}
+
+/* ===== Focus-visible rings (a11y) ===== */
+.btn:focus-visible,
+.btn-sm:focus-visible,
+.btn-req:focus-visible,
+.btn-icon:focus-visible,
+.btn-clear:focus-visible,
+.copy-btn:focus-visible,
+.primer-copy:focus-visible{
+  outline:2px solid #A8B2BB;outline-offset:2px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Sticky top bar ===== -->
+<div class="sticky-bar">
+  <div class="sticky-inner">
+    <span class="sticky-label">Season</span>
+    <input class="sticky-input" type="number" id="seasonNum" min="1" max="20" value="1" oninput="saveSeason()" aria-label="Season number"/>
+    <select class="sticky-select" id="weekType" onchange="saveWeekType();updateNowBuilding()" aria-label="Week type"></select>
+    <button class="btn-icon" id="weekNextBtn" onclick="advanceWeek()" title="Advance to next week type" aria-label="Advance to next week type">→</button>
+    <button class="btn-clear" id="copyAllBtn" onclick="copyAllOutputs(this)" aria-label="Copy all outputs">Copy all outputs</button>
+    <button class="btn-clear" onclick="confirmClearAll()" aria-label="Clear all outputs">Clear all outputs</button>
+  </div>
+</div>
+
+<h1>TTW ADVANCE TOOL</h1>
+<p class="sub">Through The Whistle — Advance Day Post Generator &nbsp;·&nbsp; Start by setting your Week, Season, and Week Type in the bar above — then work through each section top to bottom.</p>
+<div class="now-building" id="nowBuilding">Building for: Week 0 — Season Kickoff · Season 1</div>
+<div class="progress-row" id="progressRow" aria-live="polite" aria-label="Section completion progress">
+  <span class="progress-item" id="progAdvance">☐ Advance</span>
+  <span class="progress-item" id="progGOTW">☐ GOTW</span>
+  <span class="progress-item" id="progTop25">☐ Top 25</span>
+</div>
+
+<!-- ===== Coach Roster ===== -->
+<div class="section">
+  <div class="row-header">
+    <div class="tool-header tool-header--tight">
+      <div class="tool-header-bar"></div>
+      <div>
+        <div class="tool-header-text">Coach Roster <span class="badge hidden" id="savedBadge">✓ Synced</span></div>
+        <div class="tool-header-sub">Synced live from the Team Info Sheet on load</div>
+      </div>
+    </div>
+    <button class="btn-sm" onclick="togglePanel('rosterPanel')">Show / Hide</button>
+  </div>
+  <div id="rosterPanel" class="hidden panel-body">
+    <p class="sec-sub">Pulled live from the Team Info Sheet. Update the Sheet after the carousel — the tool syncs automatically on load.</p>
+    <div class="roster-head"><span>Team name</span><span>Discord username</span><span></span></div>
+    <div id="rosterRows"><p class="roster-empty">Loading roster...</p></div>
+    <button class="btn-sm" style="margin-top:8px" onclick="fetchRoster()">↻ Refresh from Sheet</button>
+  </div>
+</div>
+
+<!-- ===== Webhook Settings ===== -->
+<div class="section">
+  <div class="row-header">
+    <div class="tool-header tool-header--tight">
+      <div class="tool-header-bar"></div>
+      <div>
+        <div class="tool-header-text">Discord Webhook <span class="badge hidden" id="webhookBadge">✓ Saved</span></div>
+        <div class="tool-header-sub">Set once — stored locally, never uploaded</div>
+      </div>
+    </div>
+    <button class="btn-sm" onclick="togglePanel('webhookPanel')">Show / Hide</button>
+  </div>
+  <div id="webhookPanel" class="hidden panel-body">
+    <p class="sec-sub">Saved in your browser only — never sent anywhere except Discord.</p>
+    <div class="fg">
+      <label for="webhookUrl">Main webhook URL <span style="color:#A8B2BB;font-weight:400">(Advance posts — text channel)</span></label>
+      <input type="text" id="webhookUrl" placeholder="https://discord.com/api/webhooks/..." oninput="saveWebhook()"/>
+    </div>
+    <p class="status-msg status-msg--error hidden" id="webhookFormatWarn">That doesn't look like a Discord webhook URL. It should start with <code>https://discord.com/api/webhooks/</code>.</p>
+    <div class="fg">
+      <label for="forumWebhookUrl">Forum webhook URL <span style="color:#A8B2BB;font-weight:400">(GOTW + Top 25 — forum channel)</span></label>
+      <input type="text" id="forumWebhookUrl" placeholder="https://discord.com/api/webhooks/..." oninput="saveForumWebhook()"/>
+    </div>
+    <p class="status-msg status-msg--error hidden" id="forumWebhookFormatWarn">That doesn't look like a Discord webhook URL. It should start with <code>https://discord.com/api/webhooks/</code>.</p>
+    <div class="grid2" style="margin-top:6px">
+      <div class="fg">
+        <label for="roleId">Role ID for @TTW Coach <span style="color:#A8B2BB;font-weight:400">(optional)</span></label>
+        <input type="text" id="roleId" placeholder="e.g. 1494142269102755962" oninput="saveRoleId()"/>
+      </div>
+      <div class="fg">
+        <label for="channelId">Channel ID for #scheduling <span style="color:#A8B2BB;font-weight:400">(optional)</span></label>
+        <input type="text" id="channelId" placeholder="e.g. 1494150887239716924" oninput="saveChannelId()"/>
+      </div>
+    </div>
+    <p class="hint">Right-click the role or channel in Discord → Copy ID (requires Developer Mode). When set, @TTW Coach and #scheduling become real pings and links on post. Forum webhook posts create a new thread per post.</p>
+    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+      <button class="btn-sm hidden" id="webhookTest" onclick="testWebhook(this)" aria-label="Send test ping to main webhook">Send test ping</button>
+      <button class="btn-sm hidden" id="forumWebhookTest" onclick="testForumWebhook(this)" aria-label="Send test ping to forum webhook">Test forum webhook</button>
+      <button class="btn-sm hidden" id="webhookForget" onclick="forgetWebhook()" aria-label="Forget saved webhook URLs">Forget saved URLs</button>
+    </div>
+    <p class="ok hidden" id="webhookSaveMsg">Webhooks saved to browser storage.</p>
+    <p class="hidden" id="webhookTestMsg"></p>
+    <hr class="divider" style="margin:1rem 0"/>
+    <div class="row-header">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#F5F5F7;text-transform:uppercase;letter-spacing:.04em">State export / import</div>
+        <div class="hint" style="margin-top:2px">Bundle all TTW settings and drafts into a JSON file — restore on another browser or device.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn-sm" onclick="exportState()" aria-label="Export all TTW settings as JSON">⇩ Export state</button>
+      <button class="btn-sm" onclick="document.getElementById('importFile').click()" aria-label="Import TTW settings from JSON">⇧ Import state</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden" onchange="importState(event)"/>
+    </div>
+    <p class="hidden" id="ioMsg"></p>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ===== 01 — Advance Post ===== -->
+<div class="section">
+  <div class="tool-header">
+    <div class="tool-header-bar"></div>
+    <div>
+      <div class="tool-header-text">01 — Advance Post</div>
+      <div class="tool-header-sub">Generate a fresh advance post for this week</div>
+    </div>
+  </div>
+  <div class="hidden" id="wheelToggleBox">
+    <div class="wheel-toggle">
+      <input type="checkbox" id="wheelToggle" onchange="saveWheel()" checked/>
+      <label for="wheelToggle">🎡 Wheel of Fortune active this season</label>
+    </div>
+    <div class="fg hidden" id="wheelDateBox" style="margin-top:8px">
+      <label>Wheel date/time <span style="color:#A8B2BB;font-weight:400">(optional — leave blank to stay vague)</span></label>
+      <input type="text" id="wheelDate" placeholder="e.g. Saturday at 8pm EST" oninput="saveWheelDate()"/>
+    </div>
+  </div>
+  <button class="btn-req" onclick="requestAdvance()">Build advance post request ↗</button>
+  <p class="hint" style="margin-top:8px">A copyable Claude request will appear below after clicking.</p>
+  <div id="advRequestSection" class="hidden panel-body">
+    <p class="dashed-hint">— Claude Request — copy and paste into Claude chat</p>
+    <div class="out-header">
+      <span class="out-label">Copy this into Claude<span class="req-timestamp" id="advRequestTime"></span></span>
+      <button class="copy-btn" onclick="copyValue('advRequest',this)">Copy</button>
+    </div>
+    <textarea class="mono-box request-box" id="advRequest" rows="5"></textarea>
+    <p class="hint" style="margin-top:6px">Then paste Claude's response below ↓</p>
+  </div>
+</div>
+
+<div class="output-section">
+  <div class="out-header">
+    <span class="out-label">✓ Advance Post — Output<span class="char-count" id="advCharCount">0 / 2000</span></span>
+    <div class="out-btns">
+      <button class="copy-btn" onclick="copyValue('advPaste',this)" aria-label="Copy advance post">Copy</button>
+      <button class="copy-btn copy-btn--discord" id="postBtn" onclick="postToDiscord()">Post to Discord</button>
+    </div>
+  </div>
+  <textarea class="mono-box output-box" id="advPaste" rows="5" placeholder="Paste Claude's advance post here..."></textarea>
+  <p class="status-msg hidden" id="postStatus"></p>
+  <details class="discord-preview">
+    <summary>Preview what Discord will see</summary>
+    <div class="discord-preview-box" id="advPreviewBox">Paste a post above to see the preview.</div>
+    <div class="discord-preview-footer" id="advPreviewFooter"></div>
+  </details>
+</div>
+
+<!-- GOTW section — hidden during Week 14, Bowls, Natty, and all offseason weeks -->
+<div id="gotwSection">
+
+<hr class="divider"/>
+
+<!-- ===== 02 — Game of the Week ===== -->
+<div class="section">
+  <div class="tool-header">
+    <div class="tool-header-bar"></div>
+    <div>
+      <div class="tool-header-text">02 — Game of the Week</div>
+      <div class="tool-header-sub">Fill in the matchup details and generate the full GOTW article</div>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:12px">
+    <div>
+      <div class="team-label">Team 1</div>
+      <div class="fg"><label>Team name</label><input type="text" id="g1team" placeholder="Oregon"/></div>
+      <div class="fg"><label>Coach name</label><input type="text" id="g1coach" placeholder="GoodGameBro"/></div>
+      <div class="fg"><label>Record</label><input type="text" id="g1rec" placeholder="15-1"/></div>
+      <div class="fg"><label>Ranking (optional)</label><input type="text" id="g1rank" placeholder="#1"/></div>
+      <div class="fg"><label>Recent result <span style="color:#A8B2BB;font-weight:400">(or preseason outlook)</span></label><input type="text" id="g1result" placeholder="W 52-17 vs Ohio State  —or—  Returns 17 starters from 11-2 campaign"/></div>
+      <div class="fg"><label>Team narrative</label><textarea class="mono-box paste-box" id="g1narrative" rows="2" placeholder="Hot off a dominant title game win, or building on preseason buzz..."></textarea></div>
+      <div class="fg"><label>Key players <span style="color:#A8B2BB;font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g1players" rows="3" placeholder="QB Jason Smith — 341 yds, 4 TD last week&#10;RB Marcus Johnson — 1,200 yds projected as a junior"></textarea></div>
+    </div>
+    <div>
+      <div class="team-label">Team 2</div>
+      <div class="fg"><label>Team name</label><input type="text" id="g2team" placeholder="Oklahoma"/></div>
+      <div class="fg"><label>Coach name</label><input type="text" id="g2coach" placeholder="DEppsRightSteps"/></div>
+      <div class="fg"><label>Record</label><input type="text" id="g2rec" placeholder="14-1"/></div>
+      <div class="fg"><label>Ranking (optional)</label><input type="text" id="g2rank" placeholder="#3"/></div>
+      <div class="fg"><label>Recent result <span style="color:#A8B2BB;font-weight:400">(or preseason outlook)</span></label><input type="text" id="g2result" placeholder="W 38-21 vs Florida State  —or—  Loaded returning core, ranked preseason top 10"/></div>
+      <div class="fg"><label>Team narrative</label><textarea class="mono-box paste-box" id="g2narrative" rows="2" placeholder="Battle-tested and peaking late, or riding preseason momentum..."></textarea></div>
+      <div class="fg"><label>Key players <span style="color:#A8B2BB;font-weight:400">(stats, projections, or returning stars)</span></label><textarea class="mono-box paste-box" id="g2players" rows="3" placeholder="QB Tyler Williams — 298 yds, 3 TD last week&#10;DE Chris Carter — projected all-conference returning senior"></textarea></div>
+    </div>
+  </div>
+
+  <div class="fg"><label>Storyline / stakes</label><input type="text" id="gotwCtx" placeholder="Playoff semifinal, revenge game, undefeated on the line..."/></div>
+  <div class="fg"><label>Home team</label><input type="text" id="gotwHome" placeholder="Oregon (or Neutral site)"/></div>
+
+  <div class="action-row">
+    <button class="btn-req" id="gotwBtn" onclick="requestGOTW()" disabled>Build GOTW request ↗</button>
+    <button class="btn-clear" onclick="clearGOTW()">Clear fields</button>
+  </div>
+  <p class="hint" style="margin-top:8px">Fill in both team names to enable this button.</p>
+  <div id="gotwRequestSection" class="hidden panel-body">
+    <p class="dashed-hint">— Claude Request — copy and paste into Claude chat</p>
+    <div class="out-header">
+      <span class="out-label">Copy this into Claude<span class="req-timestamp" id="gotwRequestTime"></span></span>
+      <button class="copy-btn" onclick="copyValue('gotwRequest',this)">Copy</button>
+    </div>
+    <textarea class="mono-box request-box" id="gotwRequest" rows="10"></textarea>
+    <p class="hint" style="margin-top:6px">Then paste Claude's response below ↓</p>
+  </div>
+
+  <div class="gotw-graphic">
+    <p class="gotw-graphic-title">🎨 GOTW Graphic Prompt</p>
+    <p class="gotw-graphic-desc">Generates a Gemini image prompt based on your matchup. Open Claude chat, paste this in, and Claude will look up the correct stadiums and mascots and return a ready-to-use image prompt.</p>
+    <button class="btn-req" id="imgBtn" style="margin-top:0" onclick="requestImagePrompt()" disabled>Build image prompt request ↗</button>
+    <p class="hint" style="margin-top:8px">Fill in both team names above to enable this button.</p>
+    <div id="imgRequestSection" class="hidden panel-body">
+      <p class="dashed-hint">— Claude Request — copy and paste into Claude chat</p>
+      <div class="out-header">
+        <span class="out-label">Copy this into Claude<span class="req-timestamp" id="imgRequestTime"></span></span>
+        <button class="copy-btn" onclick="copyValue('imgRequest',this)">Copy</button>
+      </div>
+      <textarea class="mono-box request-box" id="imgRequest" rows="6"></textarea>
+      <p class="hint" style="margin-top:6px">Claude will search for the correct stadiums and mascots and return the full Gemini prompt. Attach your reference image in Gemini when you paste it.</p>
+    </div>
+  </div>
+</div>
+
+<div class="output-section">
+  <div class="out-header">
+    <span class="out-label">✓ Game of the Week Article — Output</span>
+    <div class="out-btns">
+      <button class="copy-btn" onclick="copyValue('gotwPaste',this)" aria-label="Copy GOTW article">Copy</button>
+      <button class="copy-btn copy-btn--discord" id="gotwPostBtn" onclick="postGOTWToDiscord()">Post to Discord</button>
+    </div>
+  </div>
+  <textarea class="mono-box output-box" id="gotwPaste" rows="12" placeholder="Paste Claude's GOTW article here..."></textarea>
+  <p class="status-msg hidden" id="gotwPostStatus"></p>
+  <details class="discord-preview">
+    <summary>Preview what Discord will see</summary>
+    <div class="discord-preview-box" id="gotwPreviewBox">Paste a GOTW article above to see the preview.</div>
+    <div class="discord-preview-footer" id="gotwPreviewFooter"></div>
+  </details>
+</div>
+
+</div><!-- /#gotwSection -->
+
+<!-- Top 25 section — hidden during offseason weeks -->
+<div id="top25Section">
+
+<hr class="divider"/>
+
+<!-- ===== 03 — Top 25 Rankings ===== -->
+<div class="section">
+  <div class="tool-header">
+    <div class="tool-header-bar"></div>
+    <div>
+      <div class="tool-header-text">03 — Top 25 Rankings</div>
+      <div class="tool-header-sub">Use Claude to read your screenshots, then generate the post instantly</div>
+    </div>
+  </div>
+  <div class="primer">
+    <p class="primer-title">📸 HOW TO FILL IN THE TOP 25</p>
+    <p class="primer-text">Take three screenshots from the game: the top half of the rankings list, the bottom half, and the <strong>More Information</strong> screen showing "Others Receiving Votes."</p>
+    <p class="primer-step">Step 1 — Open Claude chat and paste this first:</p>
+    <textarea id="primerText" class="primer-box" rows="4">I help run TTW (Through The Whistle), a 32-coach online college football dynasty sim league on EA Sports College Football. Please read the attached in-game Top 25 poll screenshots and return a clean ranked list formatted as "Team Record" one per line (e.g. Alabama 4-0), followed by a separate list of teams receiving votes. Extract team names and records only — nothing else.</textarea>
+    <button class="primer-copy" onclick="copyPrimer(this)">Copy primer</button>
+    <p class="primer-text"><strong>Step 2</strong> — Upload all three screenshots to Claude chat.<br/><strong>Step 3</strong> — Claude hands you back the formatted list. Paste it into the fields below.</p>
+  </div>
+  <div class="grid2">
+    <div class="fg">
+      <label>This week — "Team Record" one per line</label>
+      <textarea id="top25" rows="14" style="resize:vertical" placeholder="Paste this week's rankings here — one team and record per line (e.g. Alabama 4-0)"></textarea>
+    </div>
+    <div class="fg">
+      <label>Last week — team names only (auto-fills after generate)</label>
+      <textarea id="last25" rows="14" style="resize:vertical" placeholder="Auto-fills after first generate — or paste last week's teams manually"></textarea>
+    </div>
+  </div>
+  <div class="fg" style="margin-top:10px">
+    <label>Receiving votes (one per line)</label>
+    <textarea id="receiving" rows="5" style="resize:vertical" placeholder="One team per line"></textarea>
+  </div>
+  <p class="hint">Teams receiving votes but not ranked in the Top 25 this week only. Tip: press <strong style="color:#F5F5F7">Ctrl/Cmd+Enter</strong> in the rankings box to generate.</p>
+</div>
+
+<div class="action-row">
+  <button class="btn" style="flex:1;margin:0" onclick="generate()">Generate Top 25 post</button>
+  <button class="btn-clear" onclick="clearTop25()">Clear fields</button>
+</div>
+
+<div class="warn-box hidden" id="top25Warnings"></div>
+
+<div id="output" class="hidden">
+  <div class="output-section">
+    <div class="out-header">
+      <span class="out-label">✓ Top 25 Poll — Output (editable)</span>
+      <div class="out-btns">
+        <button class="copy-btn" onclick="copyValue('t25Post',this)" aria-label="Copy Top 25 poll">Copy</button>
+        <button class="copy-btn copy-btn--discord" id="t25PostBtn" onclick="postTop25ToDiscord()">Post to Discord</button>
+      </div>
+    </div>
+    <textarea class="mono-box output-box" id="t25Post" rows="20"></textarea>
+    <p class="status-msg hidden" id="t25PostStatus"></p>
+    <details class="discord-preview">
+      <summary>Preview what Discord will see</summary>
+      <div class="discord-preview-box" id="t25PreviewBox">Generate the Top 25 above to see the preview.</div>
+      <div class="discord-preview-footer" id="t25PreviewFooter"></div>
+    </details>
+  </div>
+</div>
+
+</div><!-- /#top25Section -->
+
+<script>
+'use strict';
+
+// ============ Constants & storage keys ============
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFNE1VvmzOA--kOJX06QzrcGLp9SZrHu3hG388Kudz_Fzr4YJC2w_-mPRpdrfAtGAgcA/exec';
+const DIV = '━━━━━━━━━━━━━━━━━━━━';
+const STORAGE = {
+  lastWeek:     'clos_last_week_v1',
+  webhook:      'clos_webhook_url',
+  forumWebhook: 'clos_forum_webhook_url',
+  roleId:       'clos_role_id',
+  channelId:    'clos_channel_id',
+  season:       'clos_season',
+  weekType:     'clos_week_type',
+  gotwDraft:    'clos_gotw_draft_v1',
+  top25Draft:   'clos_top25_draft_v1',
+  wheelActive:  'clos_wheel_active',
+  wheelDate:    'clos_wheel_date'
+};
+const WEBHOOK_PATTERN = /^https:\/\/(canary\.|ptb\.)?discord(app)?\.com\/api\/webhooks\/\d+\/[\w-]+/i;
+const ROSTER_TIMEOUT_MS = 10000;
+const DISCORD_CONTENT_LIMIT = 2000;
+const DISCORD_THREAD_NAME_LIMIT = 100;
+// Deep Navy #0D1B2A as decimal — used as the sidebar color on all embeds.
+const EMBED_COLOR = 0x0D1B2A;
+
+// ============ Week-type config (single source of truth) ============
+// Drives the dropdown options, short codes, display labels, and tone
+// guidance fed into every Claude prompt. Edit here — nothing else.
+const TONE = {
+  // In-season
+  kickoff:   'This is Week 0 — the season is brand new. Tone should feel like a fresh start: anticipation, potential, anything is possible. No pressure yet, just excitement.',
+  early:     'Early season. Tone should feel like first impressions and early statement games. Who looks legit? Who is already surprising people? Expectations are being set.',
+  mid:       'Midseason. The real teams are starting to separate from the pretenders. Tone should feel like a turning point — who is actually built for this?',
+  late:      'Late season. Every game has massive implications. Tone should feel urgent and high stakes — seasons are on the line, playoff spots are being won and lost.',
+  rivalry:   'Rivalry Week. Records go out the window. Iron Bowl, The Game, Bedlam, Holy War — the biggest grudge matches of the year all firing the same Saturday. Tone: personal, heated, historic. Year-long grudges settle, legacies stamp, nothing else on the schedule matters.',
+  armynavy:  'Army/Navy Week. One game, two service academies, 125+ years of tradition. Everyone else sits — only Army and Navy take the field. Tone: reverent, cinematic, not playoff-flavored. Honor, pride, and the game itself. The one Saturday the whole country watches two programs nobody talks about the other 51 weeks.',
+  confchamp: 'Conference Championships. Tone should feel like a one-game season — winner takes the title, loser goes home with nothing. Legacy is on the line.',
+  bowl:      'Bowl season. Tone should feel like a reward — programs that earned it get one last shot to make a statement. Pride, momentum, and bragging rights heading into the offseason.',
+  natty:     'National Championship. This is the biggest game of the season. Tone should feel dynasty-defining — once in a season, everything on the line, one team walks away as champions. Maximum drama, maximum stakes.',
+
+  // Offseason — End of Season Recap (Wheel of Fortune spins this week)
+  eosOn:     'Champion crowned. Season closed. But the offseason is already heating up — the Wheel of Fortune is coming. Eligible coaches are in the pool, and the whole league will be watching live as offers get revealed from Tier 5 up through Tier 1. Tone: reflective on the season that just ended, but building anticipation for the Wheel. Hype the upcoming live event — this is the night the carousel starts spinning.',
+  eosOff:    'Champion crowned. Season closed. No Wheel of Fortune this season — either nobody applied or nobody cleared the bar. Tone: measured and reflective. Look back at the biggest storylines of the year, the programs that over-delivered, the ones that cratered. A week to breathe before the offseason machinery fires up.',
+
+  // Offseason — Players Leaving (accepted Wheel offers execute; retention negotiations run)
+  plOn:      'The Wheel of Fortune has spun. The league watched it live, the offers landed, and now it\'s real — coaches who accepted are deleting their current head coach and rebuilding at their new school. Achievements wiped, records reset, slates blank. Meanwhile every program is working the phones, pitching outgoing stars to stay before the portal opens. Tone: kinetic, high-stakes, transformational. The map of the league redraws overnight.',
+  plOff:     'No Wheel moves this season — this week is pure retention work. Every program is pitching outgoing stars to stay before the portal opens. Tone: tactical and tense. Coaches making their cases, players weighing their options, depth charts starting to wobble.',
+
+  // Offseason — Transfer Portal windows
+  portal1:   'Transfer Portal opens. First wave hits. Tone: market bell ringing. Stars departing, stars available, every roster under construction.',
+  portal2:   'Portal in full swing. First batch of moves locks in. Tone: rumor mill at full tilt. Who landed where, who\'s still shopping, what boards just got reshuffled.',
+  portal3:   'Late portal territory. Tone: last call at the auction. Desperation buys, program-altering swings, teams scrambling to plug holes.',
+  portal4:   'Portal closes. Rosters lock. Tone: dust settling. Name the winners and losers of the cycle, new depth charts coming into focus.',
+
+  // Offseason — late-stage roster shaping
+  nsd:       'Recruits officially sign. Position changes go on the books. Tone: draft night energy. Months of speculation converging on one page of signatures.',
+  training:  'Development hits. Last clean look at the roster before cuts. Tone: lab reveal. Who broke out, who stalled, which storylines just got louder.',
+  et:        'Final roster moves. Coaches trim the fat and finalize depth charts. Tone: business end of roster construction. Tough decisions, hard conversations, clean rosters by week\'s end.',
+  preseason: 'Door to the new season is open. Media days, preseason polls, camp reports. Tone: engine revving. Narratives setting, rankings solidifying, Week 0 within reach.'
+};
+
+const WEEK_TYPES = [
+  // In-season
+  { key:'kickoff',   short:'0',  label:'Week 0 — Season Kickoff',   tone:TONE.kickoff },
+  { key:'week1',     short:'1',  label:'Week 1',                     tone:TONE.early },
+  { key:'week2',     short:'2',  label:'Week 2',                     tone:TONE.early },
+  { key:'week3',     short:'3',  label:'Week 3',                     tone:TONE.early },
+  { key:'week4',     short:'4',  label:'Week 4',                     tone:TONE.early },
+  { key:'week5',     short:'5',  label:'Week 5',                     tone:TONE.mid },
+  { key:'week6',     short:'6',  label:'Week 6',                     tone:TONE.mid },
+  { key:'week7',     short:'7',  label:'Week 7',                     tone:TONE.mid },
+  { key:'week8',     short:'8',  label:'Week 8',                     tone:TONE.mid },
+  { key:'week9',     short:'9',  label:'Week 9',                     tone:TONE.late },
+  { key:'week10',    short:'10', label:'Week 10',                    tone:TONE.late },
+  { key:'week11',    short:'11', label:'Week 11',                    tone:TONE.late },
+  { key:'week12',    short:'12', label:'Week 12',                    tone:TONE.late },
+  { key:'week13',    short:'13', label:'Week 13',                    tone:TONE.late },
+  { key:'week14',    short:'14', label:'Week 14 — Rivalry Week',     tone:TONE.rivalry },
+  { key:'week15',    short:'15', label:'Week 15 — Army/Navy Week',   tone:TONE.armynavy },
+  { key:'confchamp', short:'CC', label:'Conference Championships',   tone:TONE.confchamp },
+  { key:'bowl1',     short:'B1', label:'Bowl Week 1',                tone:TONE.bowl },
+  { key:'bowl2',     short:'B2', label:'Bowl Week 2',                tone:TONE.bowl },
+  { key:'bowl3',     short:'B3', label:'Bowl Week 3',                tone:TONE.bowl },
+  { key:'natty',     short:'NC', label:'National Championship',      tone:TONE.natty },
+
+  // Offseason (belongs to the upcoming season — natty→eos auto-bumps Season +1)
+  // tone is the default (Wheel of Fortune ON); toneOff used when the wheel toggle is unchecked
+  { key:'eos',            short:'OS',  label:'End of Season Recap',      tone:TONE.eosOn, toneOff:TONE.eosOff },
+  { key:'playersleaving', short:'PL',  label:'Players Leaving',          tone:TONE.plOn,  toneOff:TONE.plOff },
+  { key:'portal1',        short:'P1',  label:'Offseason Portal Week 1',  tone:TONE.portal1 },
+  { key:'portal2',        short:'P2',  label:'Offseason Portal Week 2',  tone:TONE.portal2 },
+  { key:'portal3',        short:'P3',  label:'Offseason Portal Week 3',  tone:TONE.portal3 },
+  { key:'portal4',        short:'P4',  label:'Offseason Portal Week 4',  tone:TONE.portal4 },
+  { key:'nsd',            short:'NSD', label:'National Signing Day',     tone:TONE.nsd },
+  { key:'training',       short:'TR',  label:'Training Results',         tone:TONE.training },
+  { key:'transfers',      short:'ET',  label:'Encourage Transfers',      tone:TONE.et },
+  { key:'preseason',      short:'PRE', label:'Preseason',                tone:TONE.preseason }
+];
+const WEEK_BY_KEY = Object.fromEntries(WEEK_TYPES.map(w => [w.key, w]));
+
+// Weeks during which the Top 25 section is hidden (no poll in offseason).
+const OFFSEASON_KEYS = new Set([
+  'eos','playersleaving','portal1','portal2','portal3','portal4',
+  'nsd','training','transfers','preseason'
+]);
+function isOffseason(key) { return OFFSEASON_KEYS.has(key); }
+
+// Weeks during which the GOTW section is shown. Week 15 (Army/Navy Week)
+// skipped because only one game is played league-wide. Bowl Season + Natty
+// skipped because coaches are locked in and GOTW posts aren't made.
+const GOTW_WEEKS = new Set([
+  'kickoff','week1','week2','week3','week4','week5','week6','week7',
+  'week8','week9','week10','week11','week12','week13','week14','confchamp'
+]);
+function hasGOTW(key) { return GOTW_WEEKS.has(key); }
+
+// Weeks that support the Wheel of Fortune toggle.
+function usesWheelToggle(key) { return key === 'eos' || key === 'playersleaving'; }
+
+function currentWeek() {
+  return WEEK_BY_KEY[$('weekType').value] || WEEK_TYPES[0];
+}
+
+// ============ DOM helpers ============
+const $ = id => document.getElementById(id);
+const show = el => el.classList.remove('hidden');
+const hide = el => el.classList.add('hidden');
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ Roster ============
+let rosterCache = {};
+
+async function fetchRoster() {
+  const badge = $('savedBadge');
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ROSTER_TIMEOUT_MS);
+    const resp = await fetch(APPS_SCRIPT_URL, { signal: ctrl.signal });
+    clearTimeout(timer);
+    const data = await resp.json();
+    rosterCache = {};
+    data.forEach(r => { if (r.team && r.discord) rosterCache[r.team.toLowerCase()] = r.discord; });
+    renderRoster(data);
+    show(badge);
+    badge.textContent = '✓ Synced from Sheet';
+  } catch (e) {
+    show(badge);
+    badge.textContent = '⚠ Could not load roster';
+    // Replace the "Loading roster..." placeholder with an error state so
+    // the panel doesn't look stuck mid-load.
+    $('rosterRows').innerHTML = '<p class="roster-empty">Roster unavailable — check the Apps Script endpoint and click Refresh.</p>';
+  }
+}
+
+function renderRoster(data) {
+  const c = $('rosterRows');
+  c.innerHTML = '';
+  if (!data || !data.length) {
+    c.innerHTML = '<p class="roster-empty">No coaches loaded.</p>';
+    return;
+  }
+  data.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'roster-row';
+    row.innerHTML =
+      '<span class="roster-cell">' + escapeHtml(r.team || '') + '</span>' +
+      '<span class="roster-cell">' + escapeHtml(r.discord || '') + '</span>' +
+      '<span class="roster-check">✓</span>';
+    c.appendChild(row);
+  });
+}
+
+function togglePanel(id) { $(id).classList.toggle('hidden'); }
+
+// ============ Request builders ============
+// All three sections (advance / GOTW / image prompt) share the same
+// "drop text into a textarea, reveal the panel, scroll to it" flow.
+function timestamp() {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function showRequest(sectionId, textareaId, body) {
+  $(textareaId).value = body;
+  const tsEl = $(textareaId + 'Time');
+  if (tsEl) tsEl.textContent = '· generated ' + timestamp();
+  const section = $(sectionId);
+  show(section);
+  // scroll-margin-top on .panel-body handles the sticky-bar offset via CSS.
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function requestAdvance() {
+  const w = currentWeek();
+  const season = $('seasonNum').value;
+  const isNatty = w.key === 'natty';
+
+  // EoS and Players Leaving have two tone variants depending on whether the
+  // Wheel of Fortune is active this season. For all other weeks, use w.tone.
+  let tone = w.tone;
+  if (usesWheelToggle(w.key) && !$('wheelToggle').checked && w.toneOff) {
+    tone = w.toneOff;
+  }
+  // If on EoS with Wheel active, append date/time info (or vague hype).
+  if (w.key === 'eos' && $('wheelToggle').checked) {
+    const wheelDate = ($('wheelDate').value || '').trim();
+    tone += wheelDate
+      ? '\n\nThe Wheel of Fortune spins ' + wheelDate + '. Reference this specific date/time in the post.'
+      : '\n\nDo not mention a specific date or time for the Wheel — just build anticipation. It\'s coming soon, stay tuned, keep your eyes on announcements.';
+  }
+
+  // Offseason weeks don't have games to schedule, so drop the #scheduling
+  // reference from the body instructions.
+  const bodyInstructions = isOffseason(w.key)
+    ? 'Then the body: Voice of the dynasty — authoritative, not personal. Must tag @TTW Coach. Do not reference any Discord channels unless specified. 3-4 sentences max. Fresh and unique — never the same post twice.'
+    : 'Then the body: Voice of the dynasty — authoritative, not personal. Must tag @TTW Coach, reference #scheduling and getting games booked, end with a good luck sendoff. 3-4 sentences max. Fresh and unique — never the same post twice.';
+
+  const body =
+    'Write an advance post for TTW (Through The Whistle), a 32-coach online college football dynasty sim league.\n\n' +
+    'Week ' + w.short + ', Season ' + season + ' (' + w.label + ').\n\n' +
+    'The post MUST start with this exact header on its own line:\n' +
+    '# WE\'VE ADVANCED TO ' + (isNatty ? 'THE ' : '') + w.label.toUpperCase() + '!\n\n' +
+    bodyInstructions + '\n\n' +
+    'Tone guidance: ' + tone;
+  showRequest('advRequestSection', 'advRequest', body);
+}
+
+function requestGOTW() {
+  const g1t = $('g1team').value.trim();
+  const g2t = $('g2team').value.trim();
+  if (!g1t || !g2t) { alert('Enter both team names before building the GOTW request.'); return; }
+
+  const w = currentWeek();
+  const season = $('seasonNum').value;
+  const f = id => $(id).value.trim();
+  const g1c = f('g1coach'), g1r = f('g1rec'), g1rk = f('g1rank'),
+        g1res = f('g1result'), g1nar = f('g1narrative'), g1pl = f('g1players');
+  const g2c = f('g2coach'), g2r = f('g2rec'), g2rk = f('g2rank'),
+        g2res = f('g2result'), g2nar = f('g2narrative'), g2pl = f('g2players');
+  const ctx = f('gotwCtx'), home = f('gotwHome');
+
+  const body =
+    'Write a full immersive Game of the Week match preview article for TTW (Through The Whistle), a 32-coach online college football dynasty sim league. This goes in a Discord forum channel as a thread.\n\n' +
+    'Week ' + w.short + ', Season ' + season + ' (' + w.label + ')\n' +
+    'Matchup: ' + g1t + (g1rk ? ' (' + g1rk + ')' : '') + ' (' + g1r + ') coached by ' + g1c +
+      ' vs ' + g2t + (g2rk ? ' (' + g2rk + ')' : '') + ' (' + g2r + ') coached by ' + g2c + '\n' +
+    'Home: ' + (home || 'Neutral site') + '\n' +
+    (ctx   ? 'Stakes: ' + ctx + '\n' : '') +
+    (g1res ? g1t + ' last result: ' + g1res + '\n' : '') +
+    (g1nar ? g1t + ' narrative: '   + g1nar + '\n' : '') +
+    (g1pl  ? g1t + ' key players:\n' + g1pl + '\n' : '') +
+    (g2res ? g2t + ' last result: ' + g2res + '\n' : '') +
+    (g2nar ? g2t + ' narrative: '   + g2nar + '\n' : '') +
+    (g2pl  ? g2t + ' key players:\n' + g2pl + '\n' : '') +
+    '\nTone guidance: ' + w.tone + '\n\n' +
+    'Format: bold header with team names/rankings/records, multi-paragraph breakdown of both teams, fabricated but believable coach quotes for both coaches, dramatic closing lines, end with "Who wins Week ' + w.short + '\'s Game of the Week? Vote below!"';
+  showRequest('gotwRequestSection', 'gotwRequest', body);
+}
+
+function requestImagePrompt() {
+  const g1t = $('g1team').value.trim();
+  const g2t = $('g2team').value.trim();
+  if (!g1t || !g2t) { alert('Enter both team names before building the image prompt.'); return; }
+
+  const w = currentWeek();
+  const season = $('seasonNum').value;
+  const home = $('gotwHome').value.trim();
+  const body =
+    'Write a GOTW image prompt for TTW (Through The Whistle) using the vintage college football poster style described below.\n\n' +
+    'Matchup: ' + g1t + ' vs ' + g2t + '\n' +
+    'Week ' + w.short + ' | Season ' + season + '\n' +
+    (home ? 'Home team: ' + home + '\n' : '') +
+    '\nUsing web search, look up:\n' +
+    '- The correct home stadium name for ' + g1t + '\n' +
+    '- The correct home stadium name for ' + g2t + '\n' +
+    '- The correct mascot or primary visual symbol for ' + g1t + '\n' +
+    '- The correct mascot or primary visual symbol for ' + g2t + '\n\n' +
+    'Then write a complete Gemini image prompt in this exact format:\n\n' +
+    'Vintage college football game day poster illustration, 16:9 widescreen landscape format, for TTW (Through The Whistle). [TEAM 1] vs [TEAM 2]. Bold retro poster art style — flat colors, strong graphic shapes, vintage typography, no photorealism. Left half: [TEAM 1 colors], [TEAM 1 STADIUM] illustrated in the background. Right half: [TEAM 2 colors], [TEAM 2 STADIUM] illustrated in the background. Both stadiums split down the center, each half belonging to its team. [TEAM 1 MASCOT] on the left side, [TEAM 2 MASCOT] on the right side, both facing each other at the center split, illustrated in bold vintage flat art style. Large bold retro text at the top reads "GAME OF THE WEEK." Below that: "[TEAM 1] vs [TEAM 2]." Bottom reads "CAMPUS LEGENDS OF SATURDAY" in small caps. Corner text: "WK [X] | S[X]." Feels like a 1950s college football game program cover brought to life. Output as 16:9 widescreen aspect ratio, horizontal orientation only.';
+  showRequest('imgRequestSection', 'imgRequest', body);
+}
+
+// ============ Top 25 generator ============
+// parseLine: "Alabama 4-0" -> {team:'Alabama', record:'4-0'}.
+// Record must match /^\d+-\d+$/ on the final token, else the whole line is the team.
+function parseLine(line) {
+  const p = line.trim().split(/\s+/);
+  const r = p[p.length - 1];
+  if (/^\d+-\d+$/.test(r)) return { team: p.slice(0, -1).join(' '), record: r };
+  return { team: line.trim(), record: '' };
+}
+
+// Positive return = team moved UP (old rank - new rank). Negative = moved DOWN.
+function getMovement(rank, last, team) {
+  if (!last.length) return null;
+  const i = last.findIndex(t => t.toLowerCase() === team.toLowerCase());
+  if (i === -1) return null;
+  return (i + 1) - rank;
+}
+
+function indicator(diff) {
+  if (diff === null) return ' 🆕';
+  if (diff > 0)      return ' ↑' + diff;
+  if (diff < 0)      return ' ↓' + Math.abs(diff);
+  return ' —';
+}
+
+// Pre-flight validation for the Top 25 input. Returns an array of warning
+// strings. Warnings are advisory — the generator still runs regardless.
+function validateTop25(currRaw) {
+  const warnings = [];
+  if (currRaw.length === 0) {
+    warnings.push('No teams entered — nothing to generate.');
+    return warnings;
+  }
+  if (currRaw.length !== 25) {
+    warnings.push('Expected 25 teams, got ' + currRaw.length + '.');
+  }
+  const seen = new Map();
+  const unparsed = [];
+  currRaw.forEach((line, i) => {
+    const { team, record } = parseLine(line);
+    const key = team.toLowerCase();
+    if (!team) {
+      unparsed.push('Line ' + (i + 1) + ' is blank or unparseable.');
+    } else if (seen.has(key)) {
+      warnings.push('Duplicate: "' + team + '" on lines ' + (seen.get(key) + 1) + ' and ' + (i + 1) + '.');
+    } else {
+      seen.set(key, i);
+    }
+    if (team && !record) {
+      unparsed.push('Line ' + (i + 1) + ' (' + team + ') has no record — expected "Team W-L".');
+    }
+  });
+  return warnings.concat(unparsed);
+}
+
+function renderTop25Warnings(warnings) {
+  const box = $('top25Warnings');
+  if (!warnings.length) { box.innerHTML = ''; hide(box); return; }
+  box.innerHTML = '<strong>Heads up:</strong><ul>' +
+    warnings.map(w => '<li>' + escapeHtml(w) + '</li>').join('') + '</ul>';
+  show(box);
+}
+
+function generate() {
+  try {
+    const w = currentWeek();
+    const season = $('seasonNum').value;
+    const lines = s => s.split('\n').map(t => t.trim()).filter(Boolean);
+
+    const currRaw = lines($('top25').value);
+    const last    = lines($('last25').value);
+    const recv    = lines($('receiving').value);
+
+    const warnings = validateTop25(currRaw);
+    renderTop25Warnings(warnings);
+    if (currRaw.length === 0) { hide($('output')); return; }
+
+    const parsed = currRaw.map((line, i) => {
+      const { team, record } = parseLine(line);
+      const diff = getMovement(i + 1, last, team);
+      return { team, record, diff, rank: i + 1, discord: rosterCache[team.toLowerCase()] || null };
+    });
+
+    let post = '📊 **TTW TOP 25 — WEEK ' + w.short + ' | SEASON ' + season + '**\n' + DIV + '\n\n';
+    parsed.forEach(({ team, record, diff, discord }, i) => {
+      post += '**' + (i + 1) + '.** ' + team +
+              (record ? ' (' + record + ')' : '') +
+              indicator(diff) +
+              (discord ? ' | @' + discord : '') + '\n';
+    });
+
+    const newEntries = parsed.filter(p => p.diff === null && last.length > 0);
+    const currLower  = parsed.map(p => p.team.toLowerCase());
+    const dropped    = last
+      .filter(t => !currLower.includes(t.toLowerCase()))
+      .map(t => ({ team: t, discord: rosterCache[t.toLowerCase()] || null }));
+
+    if (newEntries.length) {
+      post += '\n' + DIV + '\n🆕 **NEW TO THE POLL**\n';
+      newEntries.forEach(p => {
+        post += p.team + (p.record ? ' (' + p.record + ')' : '') +
+                ' — enters at #' + p.rank +
+                (p.discord ? ' | @' + p.discord : '') + '\n';
+      });
+    }
+    if (dropped.length) {
+      post += '\n📉 **DROPPED OUT**\n';
+      dropped.forEach(p => { post += p.team + (p.discord ? ' | @' + p.discord : '') + '\n'; });
+    }
+
+    const risers  = parsed.filter(p => p.diff !== null && p.diff > 0).sort((a,b) => b.diff - a.diff).slice(0,3);
+    const fallers = parsed.filter(p => p.diff !== null && p.diff < 0).sort((a,b) => a.diff - b.diff).slice(0,3);
+
+    if (risers.length || fallers.length) {
+      post += '\n' + DIV + '\n';
+      if (risers.length) {
+        post += '**BIGGEST RISERS**\n';
+        risers.forEach(p => {
+          post += '↑' + p.diff + ' ' + p.team + (p.record ? ' (' + p.record + ')' : '') + ' — now #' + p.rank + '\n';
+        });
+      }
+      if (fallers.length) {
+        post += '\n**BIGGEST FALLERS**\n';
+        fallers.forEach(p => {
+          post += '↓' + Math.abs(p.diff) + ' ' + p.team + (p.record ? ' (' + p.record + ')' : '') + ' — now #' + p.rank + '\n';
+        });
+      }
+    }
+
+    if (recv.length) {
+      post += '\n' + DIV + '\n**RECEIVING VOTES**\n';
+      recv.forEach(t => { post += t + '\n'; });
+    }
+
+    $('t25Post').value = post;
+    show($('output'));
+    updateT25Preview();
+    updateProgress();
+
+    // Snapshot this week's teams for next week's diff.
+    try {
+      localStorage.setItem(STORAGE.lastWeek, JSON.stringify(parsed.map(p => p.team)));
+      $('last25').value = parsed.map(p => p.team).join('\n');
+    } catch (e) {}
+  } catch (e) {
+    alert('Could not generate Top 25 post: ' + e.message);
+  }
+}
+
+// ============ GOTW field lists ============
+// GOTW_INPUT_FIELDS = the user-facing matchup form fields (saved as drafts).
+// GOTW_FIELDS = input fields + the three generated request/output textareas (used by clearGOTW).
+const GOTW_INPUT_FIELDS = [
+  'g1team','g1coach','g1rec','g1rank','g1result','g1narrative','g1players',
+  'g2team','g2coach','g2rec','g2rank','g2result','g2narrative','g2players',
+  'gotwCtx','gotwHome'
+];
+const GOTW_FIELDS = GOTW_INPUT_FIELDS.concat(['gotwRequest', 'gotwPaste', 'imgRequest']);
+
+// ============ Clear handlers ============
+
+function clearValues(ids) {
+  ids.forEach(id => { const el = $(id); if (el) el.value = ''; });
+}
+
+function clearGOTW() {
+  clearValues(GOTW_FIELDS);
+  hide($('gotwRequestSection'));
+  hide($('imgRequestSection'));
+  try { localStorage.removeItem(STORAGE.gotwDraft); } catch (e) {}
+  updateGotwButtons();
+  updateGotwPreview();
+  updateProgress();
+}
+
+function clearTop25() {
+  clearValues(['top25', 'last25', 'receiving', 't25Post']);
+  hide($('output'));
+  hide($('top25Warnings'));
+  $('top25Warnings').innerHTML = '';
+  try { localStorage.removeItem(STORAGE.lastWeek); } catch (e) {}
+  try { localStorage.removeItem(STORAGE.top25Draft); } catch (e) {}
+  updateT25Preview();
+  updateProgress();
+}
+
+function clearAll() {
+  // Advance
+  clearValues(['advRequest', 'advPaste']);
+  hide($('advRequestSection'));
+  $('advRequestTime').textContent = '';
+  const status = $('postStatus');
+  status.textContent = ''; hide(status);
+  resetPostButton($('postBtn'), 'Post to Discord');
+  updateAdvCharCount();
+  updateAdvPreview();
+  // GOTW + image prompt
+  clearGOTW();
+  $('gotwRequestTime').textContent = '';
+  $('imgRequestTime').textContent = '';
+  const gotwStatus = $('gotwPostStatus');
+  gotwStatus.textContent = ''; hide(gotwStatus);
+  resetPostButton($('gotwPostBtn'), 'Post to Discord');
+  updateGotwPreview();
+  // Top 25
+  clearTop25();
+  const t25Status = $('t25PostStatus');
+  t25Status.textContent = ''; hide(t25Status);
+  resetPostButton($('t25PostBtn'), 'Post to Discord');
+  updateT25Preview();
+  updateProgress();
+}
+
+function confirmClearAll() {
+  // Check request/output boxes AND the GOTW input form — so an in-progress
+  // matchup entry doesn't get wiped silently before the user generates.
+  const outputIds = ['advRequest','advPaste','gotwPaste','t25Post','top25','last25','receiving'];
+  const hasContent =
+    outputIds.some(id => ($(id).value || '').trim()) ||
+    GOTW_INPUT_FIELDS.some(id => ($(id).value || '').trim());
+  if (hasContent && !confirm('Clear every field, request, and output on the page? This cannot be undone.')) return;
+  clearAll();
+}
+
+// ============ Clipboard ============
+function copyValue(id, btn, restore = 'Copy') {
+  const el = $(id);
+  const txt = (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') ? el.value : el.textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = restore; }, 2000);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = restore; }, 2000);
+  });
+}
+
+function copyPrimer(btn) { copyValue('primerText', btn, 'Copy primer'); }
+
+// ============ Webhook & Discord posting ============
+function isValidWebhook(url) {
+  return WEBHOOK_PATTERN.test(url);
+}
+
+// Shared embed attached to every TTW post — brand color sidebar + footer with
+// season/week context. No title/description so mentions in `content` still ping.
+function buildEmbed() {
+  const w = currentWeek();
+  const season = $('seasonNum').value || '1';
+  return {
+    color: EMBED_COLOR,
+    footer: { text: 'TTW · Season ' + season + ' · ' + w.label }
+  };
+}
+
+// Unified webhook POST. Returns { ok, status, retryAfter?, error? }.
+// Callers own the UI messaging; this just handles the transport.
+async function sendWebhook(url, payload) {
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok || res.status === 204) return { ok: true, status: res.status };
+    if (res.status === 429) {
+      const body = await res.json().catch(() => ({}));
+      return { ok: false, status: 429, retryAfter: body.retry_after ? Math.ceil(body.retry_after) : null };
+    }
+    const err = await res.text().catch(() => '');
+    return { ok: false, status: res.status, error: err };
+  } catch (e) {
+    return { ok: false, status: 0, error: e.message };
+  }
+}
+
+// Substitute cosmetic @TTW Coach / #scheduling text with real Discord
+// mention + channel-link syntax so pings and links fire on post.
+//
+// The legacy @CLOS Coach spelling is still accepted. This pairs with the
+// prompt text above, which tells the model what to write — and with any draft
+// saved before the 2026-10-20 rebrand. If this only matched @TTW Coach, an
+// older draft would post the words "@CLOS Coach" as plain text and ping
+// nobody, which looks like the tool worked and silently reaches no one.
+function applyDiscordSubs(content, roleId, channelId) {
+  let out = content;
+  if (roleId)    out = out.replace(/@(?:TTW|CLOS) Coach/gi, '<@&' + roleId + '>');
+  if (channelId) out = out.replace(/#scheduling/gi, '<#' + channelId + '>');
+  return out;
+}
+
+// Clip forum thread names to the Discord 100-char limit.
+function clipThreadName(s) {
+  s = (s || '').trim();
+  if (s.length <= DISCORD_THREAD_NAME_LIMIT) return s;
+  return s.slice(0, DISCORD_THREAD_NAME_LIMIT - 1) + '…';
+}
+
+// Set a status element to a typed message using the .status-msg class system
+// (so colors come from CSS, not inline styles).
+function setStatus(el, text, kind) {
+  el.textContent = text;
+  el.className = 'status-msg' + (kind ? ' status-msg--' + kind : '');
+  show(el);
+}
+
+function saveWebhook() {
+  const url = $('webhookUrl').value.trim();
+  try { localStorage.setItem(STORAGE.webhook, url); } catch (e) {}
+  refreshWebhookPanelUi();
+}
+
+function saveForumWebhook() {
+  const url = $('forumWebhookUrl').value.trim();
+  try { localStorage.setItem(STORAGE.forumWebhook, url); } catch (e) {}
+  refreshWebhookPanelUi();
+}
+
+// Central UI refresh for the Webhook panel — reads both fields and decides
+// which badges, format warnings, test buttons, and the shared forget button
+// should be visible. Called whenever either input changes or on load.
+function refreshWebhookPanelUi() {
+  const mainUrl  = $('webhookUrl').value.trim();
+  const forumUrl = $('forumWebhookUrl').value.trim();
+  const badge       = $('webhookBadge');
+  const saveMsg     = $('webhookSaveMsg');
+  const forgetBtn   = $('webhookForget');
+  const testMainBtn = $('webhookTest');
+  const testForumBtn = $('forumWebhookTest');
+  const mainWarn    = $('webhookFormatWarn');
+  const forumWarn   = $('forumWebhookFormatWarn');
+  const testMsg     = $('webhookTestMsg');
+  hide(testMsg);
+
+  const mainOk  = mainUrl  && isValidWebhook(mainUrl);
+  const forumOk = forumUrl && isValidWebhook(forumUrl);
+
+  // Format warnings
+  if (mainUrl && !isValidWebhook(mainUrl)) show(mainWarn); else hide(mainWarn);
+  if (forumUrl && !isValidWebhook(forumUrl)) show(forumWarn); else hide(forumWarn);
+
+  // Test buttons — only show when the corresponding URL is valid
+  if (mainOk)  show(testMainBtn);  else hide(testMainBtn);
+  if (forumOk) show(testForumBtn); else hide(testForumBtn);
+
+  // Forget + saved badge + save message show if either URL is present
+  const anyPresent = !!(mainUrl || forumUrl);
+  if (anyPresent) { show(forgetBtn); } else { hide(forgetBtn); }
+  if (mainOk || forumOk) { show(badge); show(saveMsg); } else { hide(badge); hide(saveMsg); }
+}
+
+function saveRoleId() {
+  try { localStorage.setItem(STORAGE.roleId, $('roleId').value.trim()); } catch (e) {}
+}
+
+function saveChannelId() {
+  try { localStorage.setItem(STORAGE.channelId, $('channelId').value.trim()); } catch (e) {}
+}
+
+function loadRoleId() {
+  try {
+    const id = localStorage.getItem(STORAGE.roleId);
+    if (id) $('roleId').value = id;
+  } catch (e) {}
+}
+
+function loadChannelId() {
+  try {
+    const id = localStorage.getItem(STORAGE.channelId);
+    if (id) $('channelId').value = id;
+  } catch (e) {}
+}
+
+function forgetWebhook() {
+  $('webhookUrl').value = '';
+  $('forumWebhookUrl').value = '';
+  $('roleId').value = '';
+  $('channelId').value = '';
+  try { localStorage.removeItem(STORAGE.webhook); } catch (e) {}
+  try { localStorage.removeItem(STORAGE.forumWebhook); } catch (e) {}
+  try { localStorage.removeItem(STORAGE.roleId); } catch (e) {}
+  try { localStorage.removeItem(STORAGE.channelId); } catch (e) {}
+  refreshWebhookPanelUi();
+}
+
+function loadWebhook() {
+  try {
+    const url = localStorage.getItem(STORAGE.webhook);
+    if (url) $('webhookUrl').value = url;
+  } catch (e) {}
+  try {
+    const forumUrl = localStorage.getItem(STORAGE.forumWebhook);
+    if (forumUrl) $('forumWebhookUrl').value = forumUrl;
+  } catch (e) {}
+  loadRoleId();
+  loadChannelId();
+  refreshWebhookPanelUi();
+}
+
+async function runWebhookTest(btn, url, opts) {
+  const msgEl = $('webhookTestMsg');
+  if (!isValidWebhook(url)) {
+    setStatus(msgEl, 'URL format looks wrong — fix it first.', 'error');
+    return;
+  }
+  const orig = btn.textContent;
+  btn.textContent = 'Pinging...';
+  btn.disabled = true;
+
+  const roleId = ($('roleId').value || '').trim();
+  const pingPrefix = roleId ? '<@&' + roleId + '> ' : '';
+  const payload = {
+    content: pingPrefix + '🛠️ TTW Advance Tool — ' + opts.label + ' test ping at ' + timestamp() + '. You can delete this message.',
+    username: 'TTW Advance Bot'
+  };
+  if (roleId) payload.allowed_mentions = { roles: [roleId] };
+  // Forum webhooks require thread_name on every post (the post IS the thread).
+  if (opts.isForum) payload.thread_name = clipThreadName('TTW webhook test · ' + timestamp());
+
+  const result = await sendWebhook(url, payload);
+  if (result.ok) {
+    setStatus(msgEl, '✓ Test ping sent. Check your Discord channel.', 'success');
+  } else if (result.status === 429) {
+    setStatus(msgEl, 'Rate-limited by Discord. Try again in ' + (result.retryAfter || '?') + 's.', 'error');
+  } else if (result.status === 0) {
+    setStatus(msgEl, 'Network error: ' + (result.error || 'unknown'), 'error');
+  } else {
+    setStatus(msgEl, 'Failed: HTTP ' + result.status + '.', 'error');
+  }
+  btn.textContent = orig;
+  btn.disabled = false;
+}
+
+function testWebhook(btn) {
+  return runWebhookTest(btn, $('webhookUrl').value.trim(), { label: 'main', isForum: false });
+}
+
+function testForumWebhook(btn) {
+  return runWebhookTest(btn, $('forumWebhookUrl').value.trim(), { label: 'forum', isForum: true });
+}
+
+// Reset a post button back to its idle state (shared across post flows).
+function resetPostButton(btn, label) {
+  btn.textContent = label;
+  btn.classList.remove('is-failed');
+  btn.disabled = false;
+}
+
+function setPostButtonFailed(btn) {
+  btn.textContent = 'Failed';
+  btn.classList.add('is-failed');
+  btn.disabled = false;
+}
+
+// Shared post-to-Discord pipeline used by Advance / GOTW / Top 25. Each caller
+// supplies its own button, status element, content, idle label, webhook URL,
+// optional thread_name (for forum webhooks), and success-side-effects.
+async function postContent({ btn, status, content, idleLabel, webhookUrl, threadName, onSuccess, successMsg }) {
+  if (!webhookUrl) {
+    alert('Set the appropriate webhook URL first (Discord Webhook section above).');
+    return;
+  }
+  if (!content) {
+    alert('Nothing to post yet — fill the output above first.');
+    return;
+  }
+  if (content.length > DISCORD_CONTENT_LIMIT) {
+    setStatus(status, 'Post is ' + content.length + ' chars — Discord caps at ' + DISCORD_CONTENT_LIMIT + '. Shorten and try again.', 'error');
+    return;
+  }
+
+  btn.textContent = 'Posting...';
+  btn.disabled = true;
+
+  const roleId    = ($('roleId').value || '').trim();
+  const channelId = ($('channelId').value || '').trim();
+  const discordContent = applyDiscordSubs(content, roleId, channelId);
+
+  const payload = {
+    content: discordContent,
+    username: 'TTW Advance Bot',
+    embeds: [buildEmbed()]
+  };
+  if (roleId) payload.allowed_mentions = { roles: [roleId] };
+  if (threadName) payload.thread_name = clipThreadName(threadName);
+
+  const result = await sendWebhook(webhookUrl, payload);
+  if (result.ok) {
+    btn.textContent = '✓ Posted!';
+    setStatus(status, successMsg, 'success');
+    if (typeof onSuccess === 'function') onSuccess();
+    setTimeout(() => resetPostButton(btn, idleLabel), 3000);
+  } else if (result.status === 429) {
+    setStatus(status, 'Rate-limited by Discord. Try again in ' + (result.retryAfter || '?') + 's.', 'error');
+    setPostButtonFailed(btn);
+  } else if (result.status === 0) {
+    setStatus(status, 'Network error: ' + (result.error || 'unknown'), 'error');
+    setPostButtonFailed(btn);
+  } else {
+    setStatus(status, 'Error: ' + result.status + ' — ' + (result.error || ''), 'error');
+    setPostButtonFailed(btn);
+  }
+}
+
+async function postToDiscord() {
+  await postContent({
+    btn: $('postBtn'),
+    status: $('postStatus'),
+    content: $('advPaste').value.trim(),
+    idleLabel: 'Post to Discord',
+    webhookUrl: $('webhookUrl').value.trim(),
+    successMsg: 'Advance post sent to Discord. TTW Report will fire automatically.',
+    onSuccess: () => {
+      // Clear so repeat clicks can't re-send. To post again, regenerate + repaste.
+      $('advPaste').value = '';
+      updateAdvCharCount();
+      updateAdvPreview();
+      updateProgress();
+    }
+  });
+}
+
+async function postGOTWToDiscord() {
+  const w = currentWeek();
+  const season = $('seasonNum').value || '1';
+  const g1 = $('g1team').value.trim();
+  const g2 = $('g2team').value.trim();
+  const matchup = (g1 && g2) ? (g1 + ' vs ' + g2) : 'Matchup';
+  const threadName = 'GOTW — ' + matchup + ' — Week ' + w.short + ' S' + season;
+  await postContent({
+    btn: $('gotwPostBtn'),
+    status: $('gotwPostStatus'),
+    content: $('gotwPaste').value.trim(),
+    idleLabel: 'Post to Discord',
+    webhookUrl: $('forumWebhookUrl').value.trim(),
+    threadName: threadName,
+    successMsg: 'GOTW article posted as a new forum thread.',
+    onSuccess: () => {
+      $('gotwPaste').value = '';
+      updateGotwPreview();
+      updateProgress();
+    }
+  });
+}
+
+async function postTop25ToDiscord() {
+  const w = currentWeek();
+  const season = $('seasonNum').value || '1';
+  const threadName = 'TTW Top 25 — Week ' + w.short + ' | Season ' + season;
+  await postContent({
+    btn: $('t25PostBtn'),
+    status: $('t25PostStatus'),
+    content: $('t25Post').value.trim(),
+    idleLabel: 'Post to Discord',
+    webhookUrl: $('forumWebhookUrl').value.trim(),
+    threadName: threadName,
+    successMsg: 'Top 25 poll posted as a new forum thread.',
+    onSuccess: () => {
+      // Intentionally NOT clearing t25Post — the user may want to edit/repost;
+      // but regenerating next week will overwrite it anyway.
+      updateT25Preview();
+    }
+  });
+}
+
+// ============ Char count + length guard (Advance post) ============
+// Advance content field in Discord webhooks caps at 2000 chars. This keeps a
+// live counter under the output header and disables the post button over cap.
+function updateAdvCharCount() {
+  const len = ($('advPaste').value || '').length;
+  const el  = $('advCharCount');
+  el.textContent = len + ' / ' + DISCORD_CONTENT_LIMIT;
+  const over = len > DISCORD_CONTENT_LIMIT;
+  el.classList.toggle('char-count--over', over);
+  const btn = $('postBtn');
+  btn.disabled = over;
+  btn.title = over ? 'Post exceeds ' + DISCORD_CONTENT_LIMIT + '-char Discord limit' : '';
+}
+
+// ============ Discord preview renderers ============
+// Applies the same mention/channel substitutions used on post, so the user
+// can eyeball exactly what Discord will render before clicking Post.
+function previewForBox(raw, boxId, footerId) {
+  const box = $(boxId);
+  const footer = $(footerId);
+  const text = (raw || '').trim();
+  if (!text) {
+    box.textContent = 'Nothing to preview yet.';
+    footer.textContent = '';
+    return;
+  }
+  const roleId    = ($('roleId').value || '').trim();
+  const channelId = ($('channelId').value || '').trim();
+  box.textContent = applyDiscordSubs(text, roleId, channelId);
+  const w = currentWeek();
+  const season = $('seasonNum').value || '1';
+  footer.textContent = 'Embed footer — TTW · Season ' + season + ' · ' + w.label;
+}
+
+function updateAdvPreview()  { previewForBox($('advPaste').value,  'advPreviewBox',  'advPreviewFooter'); }
+function updateGotwPreview() { previewForBox($('gotwPaste').value, 'gotwPreviewBox', 'gotwPreviewFooter'); }
+function updateT25Preview()  { previewForBox($('t25Post').value,   't25PreviewBox',  't25PreviewFooter'); }
+
+// ============ State export / import ============
+// Bundles every clos_* localStorage key into a JSON blob for download, and
+// restores the same shape from an uploaded file. UI state is re-read via the
+// existing load* functions so the page reflects the restored values.
+function exportState() {
+  const payload = { _exportedAt: new Date().toISOString(), version: 1, data: {} };
+  Object.values(STORAGE).forEach(key => {
+    try {
+      const v = localStorage.getItem(key);
+      if (v !== null) payload.data[key] = v;
+    } catch (e) {}
+  });
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  a.href = url;
+  a.download = 'ttw-state-' + stamp + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  const msg = $('ioMsg');
+  setStatus(msg, '✓ Exported ' + Object.keys(payload.data).length + ' keys.', 'success');
+}
+
+function importState(event) {
+  const file = event.target.files && event.target.files[0];
+  const msg = $('ioMsg');
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      const data = (parsed && parsed.data) ? parsed.data : parsed;
+      if (!data || typeof data !== 'object') throw new Error('Invalid file format');
+      const validKeys = new Set(Object.values(STORAGE));
+      let count = 0;
+      Object.entries(data).forEach(([k, v]) => {
+        if (validKeys.has(k) && typeof v === 'string') {
+          try { localStorage.setItem(k, v); count++; } catch (e2) {}
+        }
+      });
+      // Re-hydrate the UI from storage.
+      loadSeason();
+      loadWeekType();
+      loadLastTop25();
+      loadTop25Draft();
+      loadWebhook();
+      loadGotwDraft();
+      loadWheel();
+      loadWheelDate();
+      updateNowBuilding();
+      updateGotwButtons();
+      updateAdvCharCount();
+      updateAdvPreview();
+      updateGotwPreview();
+      updateT25Preview();
+      setStatus(msg, '✓ Imported ' + count + ' keys.', 'success');
+    } catch (err) {
+      setStatus(msg, 'Import failed: ' + err.message, 'error');
+    }
+    event.target.value = '';
+  };
+  reader.onerror = () => { setStatus(msg, 'Could not read file.', 'error'); };
+  reader.readAsText(file);
+}
+
+// ============ Season & week-type persistence ============
+function saveSeason() {
+  const v = $('seasonNum').value;
+  try { localStorage.setItem(STORAGE.season, v); } catch (e) {}
+  updateNowBuilding();
+}
+
+function loadSeason() {
+  try {
+    const v = localStorage.getItem(STORAGE.season);
+    if (v) $('seasonNum').value = v;
+  } catch (e) {}
+}
+
+function saveWeekType() {
+  try { localStorage.setItem(STORAGE.weekType, $('weekType').value); } catch (e) {}
+}
+
+function loadWeekType() {
+  try {
+    const v = localStorage.getItem(STORAGE.weekType);
+    if (v && WEEK_BY_KEY[v]) $('weekType').value = v;
+  } catch (e) {}
+}
+
+// ============ Live "now building" label ============
+function updateNowBuilding() {
+  const w = currentWeek();
+  const s = $('seasonNum').value || '1';
+  $('nowBuilding').textContent = 'Building for: ' + w.label + ' · Season ' + s;
+  updateSectionVisibility();
+  updateProgress();
+}
+
+// ============ Progress checklist ============
+// Updates the ☐/☑ indicators based on whether each output section has content.
+// Called after paste/type events on output boxes and after generate/clear.
+function updateProgress() {
+  const w = currentWeek();
+  const checks = [
+    { id: 'progAdvance', has: ($('advPaste').value || '').trim(), always: true },
+    { id: 'progGOTW',    has: ($('gotwPaste').value || '').trim(), always: hasGOTW(w.key) },
+    { id: 'progTop25',   has: ($('t25Post').value || '').trim(),   always: !isOffseason(w.key) }
+  ];
+  checks.forEach(({ id, has, always }) => {
+    const el = $(id);
+    if (!always) {
+      // Section not applicable for this week — show dash
+      el.textContent = '— ' + id.replace('prog', '');
+      el.classList.remove('is-done');
+      el.style.opacity = '.35';
+      return;
+    }
+    el.style.opacity = '';
+    if (has) {
+      el.textContent = '☑ ' + id.replace('prog', '');
+      el.classList.add('is-done');
+    } else {
+      el.textContent = '☐ ' + id.replace('prog', '');
+      el.classList.remove('is-done');
+    }
+  });
+}
+
+// ============ Section visibility ============
+// Toggles visibility of the GOTW section, the Top 25 section, and the Wheel
+// of Fortune checkbox based on the currently-selected week type. GOTW hides
+// during Week 14, Bowl Season, Natty, and offseason (no matchup previews).
+// Top 25 hides only during offseason (final poll still runs after Natty).
+function updateSectionVisibility() {
+  const w = currentWeek();
+
+  const gotw = $('gotwSection');
+  if (hasGOTW(w.key)) show(gotw); else hide(gotw);
+
+  const top25 = $('top25Section');
+  if (isOffseason(w.key)) hide(top25); else show(top25);
+
+  const wheelBox = $('wheelToggleBox');
+  if (usesWheelToggle(w.key)) show(wheelBox); else hide(wheelBox);
+
+  // Wheel date field only shows on EoS when the toggle is checked.
+  const dateBox = $('wheelDateBox');
+  if (w.key === 'eos' && $('wheelToggle').checked) show(dateBox); else hide(dateBox);
+}
+
+// ============ Wheel of Fortune toggle ============
+function saveWheel() {
+  try { localStorage.setItem(STORAGE.wheelActive, $('wheelToggle').checked ? 'true' : 'false'); } catch (e) {}
+  // Re-run visibility so the date field shows/hides with the toggle.
+  updateSectionVisibility();
+}
+
+function saveWheelDate() {
+  try { localStorage.setItem(STORAGE.wheelDate, $('wheelDate').value); } catch (e) {}
+}
+
+function loadWheelDate() {
+  try {
+    const v = localStorage.getItem(STORAGE.wheelDate);
+    if (v) $('wheelDate').value = v;
+  } catch (e) {}
+}
+
+function loadWheel() {
+  try {
+    const v = localStorage.getItem(STORAGE.wheelActive);
+    // Default true — only false if explicitly stored as 'false'.
+    $('wheelToggle').checked = v !== 'false';
+  } catch (e) { $('wheelToggle').checked = true; }
+}
+
+// ============ Week +1 button ============
+// Advances to the next week type in WEEK_TYPES order. Wraps from the final
+// offseason week (Preseason) back to Week 0. Auto-bumps Season by 1 when
+// transitioning from National Championship to End of Season Recap, since
+// offseason weeks belong to the upcoming season.
+function advanceWeek() {
+  const cur = $('weekType').value;
+  const idx = WEEK_TYPES.findIndex(w => w.key === cur);
+  const next = WEEK_TYPES[(idx + 1) % WEEK_TYPES.length];
+
+  if (cur === 'natty') {
+    const seasonInput = $('seasonNum');
+    seasonInput.value = (parseInt(seasonInput.value, 10) || 1) + 1;
+    saveSeason();
+  }
+
+  $('weekType').value = next.key;
+  saveWeekType();
+  updateNowBuilding();
+}
+
+// ============ Top 25 draft auto-save ============
+const TOP25_DRAFT_FIELDS = ['top25', 'receiving'];
+
+function saveTop25Draft() {
+  try {
+    const draft = {};
+    TOP25_DRAFT_FIELDS.forEach(id => { draft[id] = $(id).value; });
+    localStorage.setItem(STORAGE.top25Draft, JSON.stringify(draft));
+  } catch (e) {}
+}
+
+function loadTop25Draft() {
+  try {
+    const raw = localStorage.getItem(STORAGE.top25Draft);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    TOP25_DRAFT_FIELDS.forEach(id => {
+      if (typeof draft[id] === 'string') $(id).value = draft[id];
+    });
+  } catch (e) {}
+}
+
+// ============ GOTW draft auto-save ============
+function saveGotwDraft() {
+  try {
+    const draft = {};
+    GOTW_INPUT_FIELDS.forEach(id => { draft[id] = $(id).value; });
+    localStorage.setItem(STORAGE.gotwDraft, JSON.stringify(draft));
+  } catch (e) {}
+}
+
+function loadGotwDraft() {
+  try {
+    const raw = localStorage.getItem(STORAGE.gotwDraft);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    GOTW_INPUT_FIELDS.forEach(id => {
+      if (typeof draft[id] === 'string') $(id).value = draft[id];
+    });
+  } catch (e) {}
+}
+
+// ============ GOTW button enable/disable ============
+// Buttons are disabled until both team name fields are non-empty.
+function updateGotwButtons() {
+  const hasTeams = $('g1team').value.trim() && $('g2team').value.trim();
+  $('gotwBtn').disabled = !hasTeams;
+  $('imgBtn').disabled  = !hasTeams;
+}
+
+// ============ Copy all outputs ============
+// Bundles whichever of the three final outputs have content into a single
+// clipboard payload with clear section headers.
+function copyAllOutputs(btn) {
+  const parts = [];
+  const adv   = $('advPaste').value.trim();
+  const gotw  = $('gotwPaste').value.trim();
+  const top25 = $('t25Post').value.trim();
+  if (adv)   parts.push('===== ADVANCE POST =====\n\n' + adv);
+  if (gotw)  parts.push('===== GAME OF THE WEEK =====\n\n' + gotw);
+  if (top25) parts.push('===== TOP 25 POLL =====\n\n' + top25);
+  if (!parts.length) { alert('No outputs to copy yet. Paste or generate something first.'); return; }
+  const payload = parts.join('\n\n');
+  navigator.clipboard.writeText(payload).then(() => {
+    btn.textContent = 'Copied ' + parts.length + '!';
+    setTimeout(() => { btn.textContent = 'Copy all outputs'; }, 2000);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy all outputs'; }, 2000);
+  });
+}
+
+// ============ Init ============
+function populateWeekDropdown() {
+  const sel = $('weekType');
+  // No default selected attribute — loadWeekType() hydrates from storage,
+  // and the browser defaults to the first option otherwise.
+  sel.innerHTML = WEEK_TYPES.map(w =>
+    '<option value="' + w.key + '">' + w.label + '</option>'
+  ).join('');
+}
+
+function loadLastTop25() {
+  try {
+    const s = localStorage.getItem(STORAGE.lastWeek);
+    if (s) {
+      const t = JSON.parse(s);
+      if (t.length) $('last25').value = t.join('\n');
+    }
+  } catch (e) {}
+}
+
+function wireKeyboardShortcuts() {
+  // Ctrl/Cmd+Enter while focused in the rankings box triggers generate.
+  $('top25').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      generate();
+    }
+  });
+  // Ctrl/Cmd+Enter in the Advance paste box triggers Post to Discord, as
+  // long as the post button isn't disabled (over-length guard from F1).
+  $('advPaste').addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!$('postBtn').disabled && ($('advPaste').value || '').trim()) {
+        postToDiscord();
+      }
+    }
+  });
+}
+
+function wireCharCount() {
+  const el = $('advPaste');
+  el.addEventListener('input', updateAdvCharCount);
+  updateAdvCharCount();
+}
+
+function wirePreviewUpdates() {
+  // Keep each preview in sync as the user types / pastes / generates.
+  $('advPaste').addEventListener('input', updateAdvPreview);
+  $('gotwPaste').addEventListener('input', updateGotwPreview);
+  $('t25Post').addEventListener('input', updateT25Preview);
+  // Role/channel IDs and week/season changes also affect the rendered preview.
+  ['roleId', 'channelId'].forEach(id => {
+    $(id).addEventListener('input', () => {
+      updateAdvPreview(); updateGotwPreview(); updateT25Preview();
+    });
+  });
+  $('seasonNum').addEventListener('input', () => {
+    updateAdvPreview(); updateGotwPreview(); updateT25Preview();
+  });
+  $('weekType').addEventListener('change', () => {
+    updateAdvPreview(); updateGotwPreview(); updateT25Preview();
+  });
+}
+
+function wireGotwButtonGuard() {
+  ['g1team', 'g2team'].forEach(id => $(id).addEventListener('input', updateGotwButtons));
+  updateGotwButtons();
+}
+
+function wireGotwDraftSave() {
+  GOTW_INPUT_FIELDS.forEach(id => {
+    $(id).addEventListener('input', saveGotwDraft);
+  });
+}
+
+function wireTop25DraftSave() {
+  TOP25_DRAFT_FIELDS.forEach(id => {
+    $(id).addEventListener('input', saveTop25Draft);
+  });
+}
+
+function wireProgressTracking() {
+  // Update checklist when users type/paste into the three output boxes.
+  ['advPaste', 'gotwPaste', 't25Post'].forEach(id => {
+    $(id).addEventListener('input', updateProgress);
+  });
+}
+
+function init() {
+  populateWeekDropdown();
+  loadSeason();
+  loadWeekType();
+  loadLastTop25();
+  loadTop25Draft();
+  loadWebhook();
+  loadGotwDraft();
+  loadWheel();
+  loadWheelDate();
+  updateNowBuilding();
+  wireGotwButtonGuard();
+  wireGotwDraftSave();
+  wireTop25DraftSave();
+  wireProgressTracking();
+  wireKeyboardShortcuts();
+  wireCharCount();
+  wirePreviewUpdates();
+  updateAdvPreview();
+  updateGotwPreview();
+  updateT25Preview();
+  fetchRoster();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
